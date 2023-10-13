@@ -1,7 +1,7 @@
 import { Column, Entity, ObjectIdColumn, PrimaryColumn } from "typeorm";
 
 @Entity()
-export class Teacher {
+export class Quiz {
 
     @ObjectIdColumn()
     _id: string
@@ -10,8 +10,11 @@ export class Teacher {
     id: string
 
     @Column()
-    firstName: string
+    name: string
 
     @Column()
-    lastName: string
+    teacherId: string
+
+    @Column()
+    questions: string[]
 }
