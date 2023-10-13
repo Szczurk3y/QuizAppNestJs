@@ -6,6 +6,8 @@ import { TeacherModule } from './teacher/teacher.module';
 import { Teacher } from './teacher/teacher.entity';
 import { QuizModule } from './quiz/quiz.module';
 import { Quiz } from './quiz/quiz.entity';
+import { QuestionModule } from './question/question.module';
+import { Question } from './question/question.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -15,7 +17,8 @@ import { Quiz } from './quiz/quiz.entity';
       useUnifiedTopology: true,
       entities: [
         Teacher,
-        Quiz
+        Quiz,
+        Question
       ]
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -24,6 +27,7 @@ import { Quiz } from './quiz/quiz.entity';
     }),
     TeacherModule,
     QuizModule,
+    QuestionModule,
   ],
 })
 export class AppModule {}
