@@ -8,12 +8,16 @@ import { QuizModule } from './quiz/quiz.module';
 import { Quiz } from './quiz/quiz.entity';
 import { QuestionModule } from './question/question.module';
 import { Question } from './question/question.entity';
+import { AppService } from './app.service';
+import { AppController } from './app.controller';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      url: 'mongodb://localhost/quizapp',
+      host: 'mongo',
+      database: 'quizapp',
       synchronize: true,
+      logging: true,
       useUnifiedTopology: true,
       entities: [
         Teacher,
@@ -29,5 +33,7 @@ import { Question } from './question/question.entity';
     QuizModule,
     QuestionModule,
   ],
+  controllers: [AppController],
+  providers: [AppService]
 })
 export class AppModule {}
