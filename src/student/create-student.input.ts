@@ -3,7 +3,7 @@ import { MinLength } from 'class-validator'
 
 
 @InputType()
-export class CreateTeacherInput {
+export class CreateStudentInput {
 
     @MinLength(1)
     @Field()
@@ -12,6 +12,9 @@ export class CreateTeacherInput {
     @MinLength(1)
     @Field()
     lastName: string
+
+    @Field({ defaultValue: false })
+    isTeacher: boolean
 }
 
 

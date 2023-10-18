@@ -2,8 +2,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { TeacherModule } from './teacher/teacher.module';
-import { Teacher } from './teacher/teacher.entity';
+import { StudentModule } from './student/student.module';
+import { Student } from './student/student.entity';
 import { QuizModule } from './quiz/quiz.module';
 import { Quiz } from './quiz/quiz.entity';
 import { QuestionModule } from './question/question.module';
@@ -22,7 +22,7 @@ import { Answer } from './answer/answer.entity';
       logging: true,
       useUnifiedTopology: true,
       entities: [
-        Teacher,
+        Student,
         Quiz,
         Question,
         Answer
@@ -32,10 +32,10 @@ import { Answer } from './answer/answer.entity';
       driver: ApolloDriver,
       autoSchemaFile: true,
     }),
-    TeacherModule,
+    StudentModule,
     QuizModule,
     QuestionModule,
-    AnswerModule,
+    AnswerModule
   ],
   controllers: [AppController],
   providers: [AppService]

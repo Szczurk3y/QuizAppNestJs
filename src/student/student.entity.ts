@@ -1,7 +1,7 @@
 import { Column, Entity, ObjectIdColumn, PrimaryColumn } from "typeorm";
 
 @Entity()
-export class Teacher {
+export class Student {
 
     @ObjectIdColumn()
     _id: string
@@ -14,4 +14,7 @@ export class Teacher {
 
     @Column()
     lastName: string
+
+    @Column()
+    isTeacher: boolean
 }
