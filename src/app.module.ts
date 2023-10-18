@@ -10,6 +10,8 @@ import { QuestionModule } from './question/question.module';
 import { Question } from './question/question.entity';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
+import { AnswerModule } from './answer/answer.module';
+import { Answer } from './answer/answer.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -22,7 +24,8 @@ import { AppController } from './app.controller';
       entities: [
         Teacher,
         Quiz,
-        Question
+        Question,
+        Answer
       ]
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -32,6 +35,7 @@ import { AppController } from './app.controller';
     TeacherModule,
     QuizModule,
     QuestionModule,
+    AnswerModule,
   ],
   controllers: [AppController],
   providers: [AppService]
