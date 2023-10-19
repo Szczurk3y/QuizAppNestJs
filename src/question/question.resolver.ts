@@ -2,11 +2,14 @@ import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { QuestionType } from "./question.type";
 import { QuestionService } from "./question.service";
 import { CreateQuestionInput } from "./question.input";
+import { QuizService } from "src/quiz/quiz.service";
+import { Body } from "@nestjs/common";
 
 @Resolver(of => QuestionType)
 export class QuestionResolver {
     constructor(
-        private questionSrvice: QuestionService
+        private questionSrvice: QuestionService,
+        private quizService: QuizService
     ) {}
 
     @Mutation(returns => QuestionType)
@@ -15,7 +18,7 @@ export class QuestionResolver {
     ) {
         return this.questionSrvice.createQuestion(createQuestionInput)
     }
-
+ 
     @Query(returns => [QuestionType])
     async questions() {
         return this.questionSrvice.getQuestions()

@@ -1,4 +1,5 @@
-import { Column, Entity, ObjectIdColumn, PrimaryColumn } from "typeorm";
+import { Question } from "src/question/question.entity";
+import { Column, Entity, ObjectIdColumn, OneToMany, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class Quiz {
@@ -14,7 +15,4 @@ export class Quiz {
 
     @Column()
     teacherId: string
-
-    @Column()
-    questions: string[]
 }

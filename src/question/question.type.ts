@@ -1,4 +1,5 @@
-import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { Field, ID, InputType, ObjectType } from "@nestjs/graphql";
+import { IsUUID } from "class-validator";
 
 @ObjectType('Question')
 export class QuestionType {
@@ -9,6 +10,9 @@ export class QuestionType {
     @Field()
     question: string
 
-    @Field(type => [String])
-    answers: string[]
+    @Field()
+    answer: string
+
+    @Field()
+    quizId: string
 }

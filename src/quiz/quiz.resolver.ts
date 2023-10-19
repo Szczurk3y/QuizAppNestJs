@@ -1,12 +1,16 @@
-import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { QuizType } from "./quiz.type";
 import { QuizService } from "./quiz.service";
 import { CreateQuizInput } from "./create-quiz.input";
+import { QuestionService } from "src/question/question.service";
+import { Question } from "src/question/question.entity";
+import { Quiz } from "./quiz.entity";
 
 @Resolver(of => QuizType)
 export class QuizResolver {
     constructor(
-        private quizService: QuizService
+        private quizService: QuizService,
+        private questionService: QuestionService
     ) {}
 
     @Mutation(returns => QuizType)
@@ -26,7 +30,8 @@ export class QuizResolver {
         return this.quizService.getQuiz(id)
     }
 
-    // TODO: add assign-questions-to-quiz.input.ts
-    // TODO: add assigning questions to quiz
-    // TODO: add resolve field of question
+    @ResolveField()
+    async questions(@Parent() quiz: Quiz) {
+        return this.questionService.getQuestionsForQuiz(quiz.id)
+    }
 }

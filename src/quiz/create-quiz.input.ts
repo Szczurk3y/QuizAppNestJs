@@ -1,5 +1,7 @@
 import { Field, ID, InputType } from "@nestjs/graphql";
-import { MinLength } from "class-validator";
+import { IsUUID, MinLength } from "class-validator";
+import { CreateQuestionInput } from "src/question/question.input";
+import { QuestionType } from "src/question/question.type";
 
 
 @InputType()
@@ -10,11 +12,9 @@ export class CreateQuizInput {
     name: string
 
     @Field()
+    @IsUUID()
     teacherId: string
 
-    // TODO: @IsUUID("4", { each: true })
-    @Field(() => [ID], { defaultValue: [] })
-    questions: string[]
-
-    // TODO: implement assigned students
+    @Field(() => [CreateQuestionInput])
+    questions: CreateQuestionInput[]
 }
