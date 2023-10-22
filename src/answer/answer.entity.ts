@@ -13,5 +13,8 @@ export class Answer {
     answer: string
 
     @Column()
+    isCorrect: boolean
+
+    @Column()
     questionId: string
 }

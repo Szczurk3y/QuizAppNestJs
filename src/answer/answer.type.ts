@@ -11,5 +11,8 @@ export class AnswerType {
     answer: string
 
     @Field()
+    isCorrect: boolean
+
+    @Field()
     questionId: string
 }

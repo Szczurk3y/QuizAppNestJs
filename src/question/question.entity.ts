@@ -1,4 +1,5 @@
 import { Column, Entity, ObjectIdColumn, PrimaryColumn } from "typeorm";
+import { QuestionAnswerType } from "./question.type";
 
 @Entity()
 export class Question {
@@ -10,12 +11,17 @@ export class Question {
     id: string
 
     @Column()
-    question: string
-
-    @Column()
-    answer: string
-
-    @Column()
     quizId: string
 
+    @Column()
+    question: string
+
+    @Column({
+        type: "enum",
+        enum: QuestionAnswerType
+    })
+    type: QuestionAnswerType
+
+    @Column()
+    answerIds: string[]
 }

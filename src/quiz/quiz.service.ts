@@ -22,11 +22,16 @@ export class QuizService {
         const { name, teacherId, questions, studentIds } = createQuizInput
         const isReallyTeacher = await this.studentService.isTeacher(teacherId)
         const studentsExists = (await this.studentService.getManyStudents(studentIds)).length == studentIds.length
-        if (isReallyTeacher && studentsExists) {
+        const questionsCorrect = createQuizInput.questions.filter((question) => {
+            const isCorrect = this.questionService.checkQuestionIsCorrect(question.type, question.answers)
+            console.log(question.question + ": " + isCorrect)
+            return isCorrect
+        }).length == questions.length
+        if (isReallyTeacher && studentsExists && questionsCorrect) {
             const quizId = uuid()
             for await (const question of questions) {
                 question.quizId = quizId
-                this.questionService.createQuestion(question)
+                await this.questionService.createQuestion(question)
             }
             const quiz = this.quizRepository.create({
                 id: quizId,
@@ -38,13 +43,16 @@ export class QuizService {
         } else {
             switch(true) {
                 case !isReallyTeacher: {
-                    throw Error("Please provide a teacher")
+                    throw Error("Please provide a teacher.")
                 }
                 case !studentsExists: {
-                    throw Error("Please provide existing students who are not teachers")
+                    throw Error("Please provide existing students who are not teachers.")
+                }
+                case !questionsCorrect: {
+                    throw Error("Please provide questions with correct answers.")
                 }
                 default: {
-                    throw Error("Unknown error")
+                    throw Error("Unknown error.")
                 }
             }
         }

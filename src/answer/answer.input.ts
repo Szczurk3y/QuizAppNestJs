@@ -8,7 +8,9 @@ export class CreateAnswerInput {
     @Field()
     answer: string
 
-    @IsUUID()
-    @Field()
+    @Field({ defaultValue: false })
+    isCorrect: boolean
+
+    @Field({ defaultValue: "" })
     questionId: string
 }
