@@ -7,7 +7,6 @@ import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class StudentService {
-
     constructor(
         @InjectRepository(Student) private studentRepository: MongoRepository<Student>
     ) {}
@@ -32,5 +31,20 @@ export class StudentService {
         return this.studentRepository.findOneBy({ id })
     }
 
-    // TODO: implement quiz to each teacher
+    async getManyStudents(ids: string[]) {
+        const foundStudents = await this.studentRepository.find({
+            where: {
+                id: {
+                    $in: ids
+                },
+                isTeacher: false
+            }
+        })
+        return foundStudents
+    }
+
+    async isTeacher(id: string): Promise<boolean> {
+        const foundStudent = await this.getStudent(id)
+        return (foundStudent != null) ? foundStudent.isTeacher : false
+    }
 }

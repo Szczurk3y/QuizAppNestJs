@@ -1,5 +1,4 @@
-import { Field, ID, InputType, ObjectType } from "@nestjs/graphql";
-import { IsUUID } from "class-validator";
+import { Field, ID, ObjectType } from "@nestjs/graphql";
 
 @ObjectType('Question')
 export class QuestionType {

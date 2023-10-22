@@ -1,6 +1,4 @@
-import { IsUUID } from "class-validator";
-import { Quiz } from "src/quiz/quiz.entity";
-import { Column, Entity, ManyToOne, ObjectIdColumn, PrimaryColumn } from "typeorm";
+import { Column, Entity, ObjectIdColumn, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class Question {

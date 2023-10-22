@@ -1,5 +1,5 @@
 import { Field, ID, InputType } from "@nestjs/graphql";
-import { IsUUID, MinLength } from "class-validator";
+import { MinLength } from "class-validator";
 
 @InputType()
 export class CreateQuestionInput {

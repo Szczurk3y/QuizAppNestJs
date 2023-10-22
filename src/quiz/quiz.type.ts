@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
-import { CreateQuestionInput } from "src/question/question.input";
 import { QuestionType } from "src/question/question.type";
+import { StudentType } from "src/student/student.type";
 
 @ObjectType('Quiz')
 export class QuizType {
@@ -11,9 +11,12 @@ export class QuizType {
     @Field()
     name: string
 
-    @Field()
-    teacherId: string
+    @Field(type => StudentType)
+    teacher: string
 
     @Field(type => [QuestionType])
     questions: QuestionType[]
+
+    @Field(type => [StudentType])
+    students: string[]
 }
