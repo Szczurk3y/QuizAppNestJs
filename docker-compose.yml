@@ -37,7 +37,3 @@ networks:
   default:
     external: true
     name: mongo-express-network
-
-volumes:
-  mongodb-data:
-    driver: local

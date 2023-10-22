@@ -33,7 +33,7 @@ export class QuizResolver {
 
     @ResolveField()
     async questions(@Parent() quiz: Quiz) {
-        return this.questionService.getQuestionsForQuiz(quiz.id)
+        return this.questionService.getQuestionsForQuiz(quiz.id, quiz.teacherId)
     }
 
     @ResolveField()
