@@ -5,6 +5,7 @@ import { CreateQuizInput } from "./create-quiz.input";
 import { QuestionService } from "src/question/question.service";
 import { Quiz } from "./quiz.entity";
 import { StudentService } from "src/student/student.service";
+import { ID } from 'graphql-ws';
 
 @Resolver(of => QuizType)
 export class QuizResolver {
@@ -21,28 +22,26 @@ export class QuizResolver {
         return this.quizService.createQuiz(createQuizInput)
     }
 
-    @Query(returns => [QuizType])
-    async quizzes() {
-        return this.quizService.getQuizzes()
-    }
-
     @Query(returns => QuizType)
-    async quiz(@Args('id') id: string) {
-        return this.quizService.getQuiz(id)
+    async quiz(
+        @Args('quizId') quizId: ID,
+        @Args('studentId') studentId: ID
+    ) {
+        return this.quizService.getQuiz(quizId, studentId)
     }
 
     @ResolveField()
-    async questions(@Parent() quiz: Quiz) {
-        return this.questionService.getQuestionsForQuiz(quiz.id, quiz.teacherId)
+    async questionIds(@Parent() quiz: Quiz) {
+        return this.questionService.getQuestionsForQuiz(quiz.id)
     }
 
     @ResolveField()
-    async students(@Parent() quiz: Quiz) {
+    async studentIds(@Parent() quiz: Quiz) {
         return this.studentService.getManyStudents(quiz.studentIds)
     }
 
     @ResolveField()
-    async teacher(@Parent() quiz: Quiz) {
+    async teacherId(@Parent() quiz: Quiz) {
         return this.studentService.getStudent(quiz.teacherId)
     }
 }

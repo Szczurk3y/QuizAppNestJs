@@ -1,15 +1,20 @@
-import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { Field, ID as FieldID, ObjectType } from "@nestjs/graphql";
+import { Column } from "typeorm";
+import { ID } from 'graphql-ws';
 
 
 @ObjectType('StudentAnswer')
 export class StudentAnswerType {
 
-    @Field(type => ID)
-    id: string
+    @Field(type => FieldID)
+    id: ID
+
+    @Column()
+    studentId: ID
 
     @Field()
-    answer: string
+    questionId: ID
 
-    @Field()
-    questionId: string
+    @Field(type => [String])
+    studentAnswers: String[]
 }

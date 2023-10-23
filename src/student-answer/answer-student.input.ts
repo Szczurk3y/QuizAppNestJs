@@ -1,14 +1,26 @@
 import { Field, InputType } from "@nestjs/graphql"
-import { IsUUID, MinLength } from "class-validator"
+import { IsUUID } from "class-validator"
+import { ID } from 'graphql-ws';
 
-@InputType("StudentAnswerInput")
+@InputType("StudentsAnswerInput")
 export class CreateStudentAnswerInput {
-
-    @MinLength(1)
-    @Field()
-    answer: string
 
     @Field()
     @IsUUID()
-    questionId: string
+    questionId: ID
+
+    @Field({ defaultValue: "" })
+    @IsUUID("4", { each: true })
+    singleCorrectAnswerId: ID = ""
+
+    @Field(type => [String], { defaultValue: [] })
+    @IsUUID("4", { each: true })
+    multipleCorrectAnswerIds: ID[] = []
+
+    @Field(type => [String], { defaultValue: [] })
+    @IsUUID("4", { each: true })
+    sortedAnswerIds: ID[] = []
+
+    @Field({ defaultValue: ""})
+    plainTextAnswer: string = ""
 }

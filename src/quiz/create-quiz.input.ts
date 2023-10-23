@@ -1,6 +1,7 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { IsUUID, MinLength } from "class-validator";
 import { CreateQuestionInput } from "src/question/question.input";
+import { ID } from 'graphql-ws';
 
 @InputType()
 export class CreateQuizInput {
@@ -11,12 +12,12 @@ export class CreateQuizInput {
 
     @Field()
     @IsUUID()
-    teacherId: string
+    teacherId: ID
 
     @Field(() => [CreateQuestionInput])
     questions: CreateQuestionInput[]
 
     @IsUUID("4", { each: true })
     @Field(() => [String])
-    studentIds: string[]
+    studentIds: ID[]
 }

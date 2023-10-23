@@ -1,88 +1,45 @@
-import { Test, TestingModule } from "@nestjs/testing"
 import { v4 as uuid } from 'uuid'
-import { QuestionController } from "./question.controller"
 import { QuestionService } from "./question.service"
-import { CreateQuestionInput } from "./question.input"
 import { QuestionAnswerType } from "./question.type"
-import { QuizService } from "src/quiz/quiz.service"
-import { TeacherAnswerService } from "src/teacher-answer/answer-teacher.service"
+import { CreateTeacherAnswerInput } from "src/teacher-answer/answer-teacher.input"
+import { Test, TestingModule } from '@nestjs/testing'
+import { Question } from './question.entity'
+import { TeacherAnswerService } from 'src/teacher-answer/answer-teacher.service'
+import { getRepositoryToken } from '@nestjs/typeorm'
 
-describe('QuestionController', () => {
-    let controller: QuestionController
-
-    let quizService: QuizService
-    let teacherAnswerService: TeacherAnswerService
-
-    const mockkQuestionService = {
-        createQuestion: jest.fn(input => {
-            return {
-                _id: uuid(),
-                id: uuid(),
-                ...input
-            }
-        }),
-        getQuestionsForQuiz:  jest.fn()
-    }
-    const mockkQuizService = {}
-    const mockkTeacherAnswerService = {}
+describe('QuestionService', () => {
+    let questionService: QuestionService
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            controllers: [QuestionController],
             providers: [
                 QuestionService,
-                QuizService
+                {
+                    provide: getRepositoryToken(Question),
+                    useValue: {}
+                },
+                {
+                    provide: TeacherAnswerService,
+                    useValue: {}
+                }
             ]
-        })
-        .overrideProvider(QuestionService).useValue(mockkQuestionService)
-        .overrideProvider(QuizService).useValue(mockkQuizService).compile()
-
-        controller = module.get<QuestionController>(QuestionController)
+        }).compile()
+        questionService = module.get<QuestionService>(QuestionService)
     })
 
     it('should be defined', () => {
-        expect(controller).toBeDefined()
+        expect(questionService).toBeDefined()
     })
 
-    it('should create a question', () => {
-        const quizId = uuid()
-        const questionId = uuid()
-        const question: CreateQuestionInput = {
-            question: "What is the capital of France?",
-            quizId: quizId,
-            type: QuestionAnswerType.SINGLE_CORRECT_ANSWER,
-            answers: [
-                {
-                    answer: "London",
-                    isCorrect: false,
-                    questionId: questionId
-                },
-                {
-                    answer: "Paris",
-                    isCorrect: true,
-                    questionId: questionId
-                }, 
-                {
-                    answer: "Rome",
-                    isCorrect: false,
-                    questionId: questionId
-                },
-                {
-                    answer: "Madrid",
-                    isCorrect: false,
-                    questionId: questionId
-                }
-               ] 
-            
+
+
+    it('should check question is correct', async () => {
+        const questionType = QuestionAnswerType.PLAIN_TEXT_ANSWER
+        const answer: CreateTeacherAnswerInput = {
+            answer: "Paris",
+            isCorrect: true,
+            questionId: uuid()
         }
-        expect(controller.create(question)).toEqual({
-            _id: expect.any(String),
-            id: expect.any(String),
-            quizId: quizId,
-            question: "What is the capital of France?",
-            type: expect.any(String),
-            answerIds: expect.any([String])
-        })
+        expect(QuestionService.checkQuestionIsCorrect(questionType, [answer])).toBeTruthy()
     })
-
 })
