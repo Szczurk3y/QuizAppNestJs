@@ -5,6 +5,7 @@ import { QuestionService } from './question.service';
 import { QuestionResolver } from './question.resolver';
 import { QuizModule } from 'src/quiz/quiz.module';
 import { TeacherAnswerModule } from 'src/teacher-answer/answer-teacher.module';
+import { QuestionController } from './question.controller';
 
 @Module({
     imports: [
@@ -12,6 +13,7 @@ import { TeacherAnswerModule } from 'src/teacher-answer/answer-teacher.module';
         forwardRef(() => QuizModule),
         TeacherAnswerModule
     ],
+    controllers: [QuestionController],
     providers: [QuestionResolver, QuestionService],
     exports: [QuestionService]
 

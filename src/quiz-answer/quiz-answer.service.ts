@@ -3,19 +3,19 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { MongoRepository } from "typeorm";
 import { v4 as uuid } from 'uuid'
 import { QuizAnswer } from "../quiz-answer/quiz-answer.entity";
-import { QuizAnswerInput } from "./quiz-answer.input";
+import { AnswerQuizInput } from "./quiz-answer.input";
 import { StudentAnswer } from "../student-answer/answer-student.entity";
 
 
 @Injectable()
-export class QuizAnswerService {
+export class AnswerQuizService {
 
     constructor(
         @InjectRepository(QuizAnswer) private quizAnswerRepository: MongoRepository<QuizAnswer>,
         @InjectRepository(StudentAnswer) private answerStudentRepository: MongoRepository<StudentAnswer>,
     ) {}
 
-    async submitAnswersForQuiz(answerQuizInput: QuizAnswerInput): Promise<QuizAnswer> {
+    async submitAnswersForQuiz(answerQuizInput: AnswerQuizInput): Promise<QuizAnswer> {
         const { quizId, studentId, answers } = answerQuizInput
         const answersForQuiz = answers.map((_answer) => {
             return this.answerStudentRepository.create({
@@ -35,8 +35,8 @@ export class QuizAnswerService {
         return this.quizAnswerRepository.save(answeredQuiz)
     }
 
-    async getQuizAnswerForStudent(quizAnswerId: string, studentId: string): Promise<QuizAnswer> {
-        return this.quizAnswerRepository.findOneBy({ id: quizAnswerId, studentId: studentId})
+    async getQuizAnswerForStudent(quizAnswerId: string): Promise<QuizAnswer> {
+        return this.quizAnswerRepository.findOneBy({ id: quizAnswerId })
     }
 
     async getAnswersForQuizAnswer(quizAnswerId: string, studentId: string): Promise<StudentAnswer[]> {

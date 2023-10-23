@@ -3,7 +3,7 @@ import { IsUUID } from "class-validator"
 import { CreateStudentAnswerInput } from "src/student-answer/answer-student.input"
 
 @InputType()
-export class QuizAnswerInput {
+export class AnswerQuizInput {
     
     @Field()
     @IsUUID()

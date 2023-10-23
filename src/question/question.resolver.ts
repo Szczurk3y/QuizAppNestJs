@@ -36,6 +36,6 @@ export class QuestionResolver {
 
     @ResolveField()
     async answers(@Parent() question: Question) {
-        return this.answerService.getAnswersForQuestion(question.id)
+        return this.answerService.getTeacherAnswersForQuestion(question.id)
     }
 }

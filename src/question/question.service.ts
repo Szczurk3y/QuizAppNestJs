@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid'
 import { QuizService } from "src/quiz/quiz.service";
 import { TeacherAnswerService } from "src/teacher-answer/answer-teacher.service";
 import { QuestionAnswerType } from "./question.type";
-import { CreateAnswerTeacherInput } from "src/teacher-answer/answer-teacher.input";
+import { CreateTeacherAnswerInput } from "src/teacher-answer/answer-teacher.input";
 @Injectable()
 export class QuestionService {
 
@@ -25,7 +25,7 @@ export class QuestionService {
         const answerIds: string[] = []
         for await (const answer of answers) {
             answer.questionId = questionId
-            const answerId = (await this.answerService.createAnswer(answer)).id
+            const answerId = (await this.answerService.createTeacherAnswer(answer)).id
             answerIds.push(answerId)
         }
         const _question = this.questionRepository.create({
@@ -62,7 +62,7 @@ export class QuestionService {
         }
     }
     
-    checkQuestionIsCorrect(type: QuestionAnswerType, answers: CreateAnswerTeacherInput[]): Boolean {
+    checkQuestionIsCorrect(type: QuestionAnswerType, answers: CreateTeacherAnswerInput[]): Boolean {
         const answersCount = answers.length
         const actualCorrectAnswers = answers.filter((answer) => answer.isCorrect).length
 
