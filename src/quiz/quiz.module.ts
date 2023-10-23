@@ -5,12 +5,13 @@ import { QuizService } from './quiz.service';
 import { QuizResolver } from './quiz.resolver';
 import { QuestionModule } from 'src/question/question.module';
 import { StudentModule } from 'src/student/student.module';
+import { StudentAnswer } from 'src/student-answer/answer-student.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Quiz]),
+        TypeOrmModule.forFeature([Quiz, StudentAnswer]),
         forwardRef(() => QuestionModule),
-        StudentModule,
+        StudentModule
     ],
     providers: [QuizResolver, QuizService],
     exports: [QuizService]

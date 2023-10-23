@@ -3,13 +3,13 @@ import { QuestionType } from "./question.type";
 import { QuestionService } from "./question.service";
 import { CreateQuestionInput } from "./question.input";
 import { Question } from "./question.entity";
-import { AnswerService } from "src/answer/answer.service";
+import { TeacherAnswerService } from "src/teacher-answer/answer-teacher.service";
 
 @Resolver(of => QuestionType)
 export class QuestionResolver {
     constructor(
         private questionService: QuestionService,
-        private answerService: AnswerService
+        private answerService: TeacherAnswerService
     ) { }
 
     @Mutation(returns => QuestionType)

@@ -5,16 +5,16 @@ import { MongoRepository } from "typeorm";
 import { CreateQuestionInput } from "./question.input";
 import { v4 as uuid } from 'uuid'
 import { QuizService } from "src/quiz/quiz.service";
-import { AnswerService } from "src/answer/answer.service";
+import { TeacherAnswerService } from "src/teacher-answer/answer-teacher.service";
 import { QuestionAnswerType } from "./question.type";
-import { CreateAnswerInput } from "src/answer/answer.input";
+import { CreateAnswerTeacherInput } from "src/teacher-answer/answer-teacher.input";
 @Injectable()
 export class QuestionService {
 
     constructor(
         @InjectRepository(Question) private questionRepository: MongoRepository<Question>,
         @Inject(forwardRef(() => QuizService)) private quizService: QuizService,
-        private answerService: AnswerService
+        private answerService: TeacherAnswerService
     ) { }
 
     async createQuestion(
@@ -61,8 +61,8 @@ export class QuestionService {
             throw Error("Student is not allowed to view questions for this quiz.")
         }
     }
-
-    checkQuestionIsCorrect(type: QuestionAnswerType, answers: CreateAnswerInput[]): Boolean {
+    
+    checkQuestionIsCorrect(type: QuestionAnswerType, answers: CreateAnswerTeacherInput[]): Boolean {
         const answersCount = answers.length
         const actualCorrectAnswers = answers.filter((answer) => answer.isCorrect).length
 

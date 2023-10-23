@@ -1,6 +1,6 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { IsNotEmpty, MinLength } from "class-validator";
-import { CreateAnswerInput } from "src/answer/answer.input";
+import { CreateAnswerTeacherInput } from "src/teacher-answer/answer-teacher.input";
 import { QuestionAnswerType } from "./question.type";
 
 @InputType()
@@ -16,7 +16,7 @@ export class CreateQuestionInput {
     @Field(type => QuestionAnswerType)
     type: QuestionAnswerType
 
-    @Field(() => [CreateAnswerInput])
+    @Field(() => [CreateAnswerTeacherInput])
     @IsNotEmpty()
-    answers: CreateAnswerInput[]
+    answers: CreateAnswerTeacherInput[]
 }

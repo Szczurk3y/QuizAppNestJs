@@ -27,6 +27,7 @@ export class QuizService {
             console.log(question.question + ": " + isCorrect)
             return isCorrect
         }).length == questions.length
+
         if (isReallyTeacher && studentsExists && questionsCorrect) {
             const quizId = uuid()
             for await (const question of questions) {

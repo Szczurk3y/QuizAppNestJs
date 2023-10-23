@@ -1,18 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { MongoRepository } from "typeorm";
-import { Answer } from "./answer.entity";
-import { CreateAnswerInput } from "./answer.input";
+import { TeacherAnswer } from "./answer-teacher.entity";
+import { CreateAnswerTeacherInput } from "./answer-teacher.input";
 import { v4 as uuid } from 'uuid'
 
 @Injectable()
-export class AnswerService {
+export class TeacherAnswerService {
 
     constructor(
-        @InjectRepository(Answer) private answerRepository: MongoRepository<Answer>
+        @InjectRepository(TeacherAnswer) private answerRepository: MongoRepository<TeacherAnswer>
     ) { }
 
-    async createAnswer(createAnswerInput: CreateAnswerInput) {
+    async createAnswer(createAnswerInput: CreateAnswerTeacherInput) {
         const { answer, isCorrect, questionId } = createAnswerInput
 
         const _answer = this.answerRepository.create({

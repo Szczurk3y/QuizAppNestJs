@@ -10,8 +10,11 @@ import { QuestionModule } from './question/question.module';
 import { Question } from './question/question.entity';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
-import { AnswerModule } from './answer/answer.module';
-import { Answer } from './answer/answer.entity';
+import { TeacherAnswerModule } from './teacher-answer/answer-teacher.module';
+import { TeacherAnswer } from './teacher-answer/answer-teacher.entity';
+import { QuizAnswer } from './quiz-answer/quiz-answer.entity';
+import { StudentAnswer } from './student-answer/answer-student.entity';
+import { QuizAnswerModule } from './quiz-answer/quiz-answer.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -24,8 +27,10 @@ import { Answer } from './answer/answer.entity';
       entities: [
         Student,
         Quiz,
+        QuizAnswer,
         Question,
-        Answer
+        TeacherAnswer,
+        StudentAnswer
       ]
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -34,8 +39,9 @@ import { Answer } from './answer/answer.entity';
     }),
     StudentModule,
     QuizModule,
+    QuizAnswerModule,
     QuestionModule,
-    AnswerModule
+    TeacherAnswerModule
   ],
   controllers: [AppController],
   providers: [AppService]

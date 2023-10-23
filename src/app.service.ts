@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  quizAppWorkingAffirmation(): string {
+    return 'Quiz App Works, visit: \nhttp://localhost:3001/graphql and/or http://localhost:8082 admin:pass';
   }
 }

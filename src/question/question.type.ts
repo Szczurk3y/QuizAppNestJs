@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { AnswerType } from "src/answer/answer.type";
+import { TeacherAnswerType } from "src/teacher-answer/answer-teacher.type";
 
 export enum QuestionAnswerType {
     SINGLE_CORRECT_ANSWER = "single_correct_answer",
@@ -25,6 +25,6 @@ export class QuestionType {
     @Field(type => QuestionAnswerType)
     type: QuestionAnswerType
 
-    @Field(type => [AnswerType])
+    @Field(type => [TeacherAnswerType])
     answers: string[]
 }

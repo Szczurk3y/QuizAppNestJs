@@ -4,13 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { QuestionService } from './question.service';
 import { QuestionResolver } from './question.resolver';
 import { QuizModule } from 'src/quiz/quiz.module';
-import { AnswerModule } from 'src/answer/answer.module';
+import { TeacherAnswerModule } from 'src/teacher-answer/answer-teacher.module';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Question]),
         forwardRef(() => QuizModule),
-        AnswerModule
+        TeacherAnswerModule
     ],
     providers: [QuestionResolver, QuestionService],
     exports: [QuestionService]

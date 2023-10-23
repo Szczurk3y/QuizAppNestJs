@@ -1,7 +1,7 @@
 import { Column, Entity, ObjectIdColumn, PrimaryColumn } from "typeorm";
 
 @Entity()
-export class Answer {
+export class StudentAnswer {
 
     @ObjectIdColumn()
     _id: string
@@ -11,9 +11,6 @@ export class Answer {
 
     @Column()
     answer: string
-
-    @Column()
-    isCorrect: boolean
 
     @Column()
     questionId: string
