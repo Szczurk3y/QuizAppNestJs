@@ -4,6 +4,7 @@ import { MongoRepository } from "typeorm";
 import { TeacherAnswer } from "./answer-teacher.entity";
 import { CreateTeacherAnswerInput } from "./answer-teacher.input";
 import { v4 as uuid } from 'uuid'
+import { ID } from 'graphql-ws';
 
 @Injectable()
 export class TeacherAnswerService {
@@ -30,11 +31,11 @@ export class TeacherAnswerService {
         return this.teacherAnswerRepository.find()
     }
 
-    async getTeacherAnswer(id: string) {
+    async getTeacherAnswer(id: ID) {
         return this.teacherAnswerRepository.findOneBy({ id })
     }
 
-    async getTeacherAnswersForQuestion(questionId: string) {
+    async getTeacherAnswersForQuestion(questionId: ID) {
         return this.teacherAnswerRepository.find({
             where: {
                 questionId: questionId

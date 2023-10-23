@@ -15,6 +15,7 @@ import { TeacherAnswer } from './teacher-answer/answer-teacher.entity';
 import { QuizAnswer } from './quiz-answer/quiz-answer.entity';
 import { StudentAnswer } from './student-answer/answer-student.entity';
 import { QuizAnswerModule } from './quiz-answer/quiz-answer.module';
+import { StudentAnswerModule } from './student-answer/answer-student.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -41,6 +42,7 @@ import { QuizAnswerModule } from './quiz-answer/quiz-answer.module';
     QuizModule,
     QuizAnswerModule,
     QuestionModule,
+    StudentAnswerModule,
     TeacherAnswerModule
   ],
   controllers: [AppController],

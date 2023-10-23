@@ -1,17 +1,18 @@
 import { Column, Entity, ObjectIdColumn, PrimaryColumn } from "typeorm";
 import { QuestionAnswerType } from "./question.type";
+import { ID } from 'graphql-ws';
 
 @Entity()
 export class Question {
 
     @ObjectIdColumn()
-    _id: string
+    _id: ID
 
     @PrimaryColumn()
-    id: string
+    id: ID
 
     @Column()
-    quizId: string
+    quizId: ID
 
     @Column()
     question: string
@@ -23,5 +24,5 @@ export class Question {
     type: QuestionAnswerType
 
     @Column()
-    answerIds: string[]
+    answerIds: ID[]
 }

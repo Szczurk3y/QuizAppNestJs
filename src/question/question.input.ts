@@ -2,6 +2,7 @@ import { Field, InputType } from "@nestjs/graphql";
 import { IsNotEmpty, MinLength } from "class-validator";
 import { CreateTeacherAnswerInput } from "src/teacher-answer/answer-teacher.input";
 import { QuestionAnswerType } from "./question.type";
+import { ID } from 'graphql-ws';
 
 @InputType()
 export class CreateQuestionInput {
@@ -11,7 +12,7 @@ export class CreateQuestionInput {
     question: string
 
     @Field({ defaultValue: "" })
-    quizId: string
+    quizId: ID
 
     @Field(type => QuestionAnswerType)
     type: QuestionAnswerType

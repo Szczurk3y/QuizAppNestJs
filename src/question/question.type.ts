@@ -1,5 +1,6 @@
-import { Field, ID, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, ID as TypeID, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { TeacherAnswerType } from "src/teacher-answer/answer-teacher.type";
+import { ID } from 'graphql-ws';
 
 export enum QuestionAnswerType {
     SINGLE_CORRECT_ANSWER = "single_correct_answer",
@@ -8,16 +9,16 @@ export enum QuestionAnswerType {
     PLAIN_TEXT_ANSWER = "plain_text_answer"
 }
 
-registerEnumType(QuestionAnswerType, { name: 'QuestionType'})
+registerEnumType(QuestionAnswerType, { name: 'QuestionAnswerType'})
 
 @ObjectType('Question')
 export class QuestionType {
 
-    @Field(type => ID)
-    id: string
+    @Field(type => TypeID)
+    id: ID
 
     @Field()
-    quizId: string
+    quizId: ID
 
     @Field()
     question: string
@@ -26,5 +27,5 @@ export class QuestionType {
     type: QuestionAnswerType
 
     @Field(type => [TeacherAnswerType])
-    answers: string[]
+    answerIds: ID[]
 }

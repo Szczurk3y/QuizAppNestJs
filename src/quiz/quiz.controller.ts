@@ -11,13 +11,8 @@ export class QuizController {
         return this.quizService.createQuiz(createQuizInput)
     }
 
-    @Get()
-    getAll() {
-        return this.quizService.getQuizzes()
-    }
-
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.quizService.getQuiz(id)
+    @Get(':quizId/:studentId')
+    findOne(@Param('quizId') quizId: string, @Param('studentId') studentId: string) {
+        return this.quizService.getQuiz(quizId, studentId)
     }
 }
