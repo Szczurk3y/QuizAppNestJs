@@ -15,7 +15,7 @@
     - #### 1) Creating a quiz:
         - create a teacher: https://pastebin.com/4GJcmJkU
         - create a student/s: https://pastebin.com/v0tQJepZ
-        - create a quiz: https://pastebin.com/xBYukNAS
+        - create a quiz: https://pastebin.com/kN9ZqVE3
             - pass the teacher's id you've created previously
             - assign students to a quiz by providing their ids
     - #### 2) Fetching a quiz:
