@@ -20,7 +20,7 @@
             - assign students to a quiz by providing their ids
     - #### 2) Fetching a quiz:
         - provide allowed userId and a quizId
-        - https://pastebin.com/0yUp21E3
+        - https://pastebin.com/CKRNU2BB
     - #### 3) Answering to the quiz:
         - https://pastebin.com/p70mdLGW
 - ### Postman:
