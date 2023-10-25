@@ -2,6 +2,7 @@
 
 ## Instructions on how to run the app:
 - ### 1) Configure docker
+    - Start docker engine 
     - Run follwing commands: 
       - docker network create mongo-express-network
       - docker compose up --build
