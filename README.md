@@ -19,7 +19,7 @@
         - create a student: https://pastebin.com/wiQQ7bXG
         - create a quiz: https://pastebin.com/PjTcmvTr
     - ### 2) Fetching a quiz
-        - provide <assigned-student-id> and a <your-quiz-id>
+        - provide your-quiz-id and assigned-student-id
         - http://localhost:3001/quiz?quizId=<your-quiz-id>&studentId=<assigned-student-id>
     - ### 3) Answering to the quiz:
         - 
