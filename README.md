@@ -11,18 +11,6 @@
     - http://localhost:3001/graphql
     - http://localhost:8082 login: admin:pass
 ## Instructions on how to work with the app.:
-- ### Postman:
-    - ### Setup:
-        - Content-Type : application/json
-    - ### 1) Creating a quiz
-        - create a teacher: https://pastebin.com/B8U1wv08
-        - create a student: https://pastebin.com/wiQQ7bXG
-        - create a quiz: https://pastebin.com/PjTcmvTr
-    - ### 2) Fetching a quiz
-        - provide your-quiz-id and assigned-student-id
-        - http://localhost:3001/quiz?quizId="your-quiz-id"&studentId="assigned-student-id"
-    - ### 3) Answering to the quiz:
-        - 
 - ### GraphQl:
     - #### 1) Creating a quiz:
         - create a teacher: https://pastebin.com/4GJcmJkU
@@ -35,3 +23,15 @@
         - https://pastebin.com/0yUp21E3
     - #### 3) Answering to the quiz:
         - https://pastebin.com/p70mdLGW
+- ### Postman:
+    - ### Setup:
+        - Content-Type : application/json
+    - ### 1) Creating a quiz
+        - create a teacher: https://pastebin.com/B8U1wv08
+        - create a student: https://pastebin.com/wiQQ7bXG
+        - create a quiz: https://pastebin.com/PjTcmvTr
+    - ### 2) Fetching a quiz
+        - provide your-quiz-id and assigned-student-id
+        - http://localhost:3001/quiz?quizId="your-quiz-id"&studentId="assigned-student-id"
+    - ### 3) Answering to the quiz:
+        - 
