@@ -10,12 +10,12 @@ import { QuestionModule } from './question/question.module';
 import { Question } from './question/question.entity';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
-import { TeacherAnswerModule } from './teacher-answer/answer-teacher.module';
-import { TeacherAnswer } from './teacher-answer/answer-teacher.entity';
+import { TeacherAnswerModule } from './answer-teacher/answer-teacher.module';
+import { TeacherAnswer } from './answer-teacher/answer-teacher.entity';
 import { QuizAnswer } from './quiz-answer/quiz-answer.entity';
-import { StudentAnswer } from './student-answer/answer-student.entity';
+import { StudentAnswer } from './answer-student/answer-student.entity';
 import { QuizAnswerModule } from './quiz-answer/quiz-answer.module';
-import { StudentAnswerModule } from './student-answer/answer-student.module';
+import { StudentAnswerModule } from './answer-student/answer-student.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({

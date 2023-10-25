@@ -7,30 +7,30 @@ import { v4 as uuid } from 'uuid'
 import { QuestionAnswerType } from "src/question/question.type";
 import { Question } from "src/question/question.entity";
 import { ID } from 'graphql-ws';
+import { TeacherAnswer } from "src/answer-teacher/answer-teacher.entity";
+import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service";
 
 @Injectable()
 export class StudentAnswerService {
 
     constructor(
-        @InjectRepository(StudentAnswer) private studentAnswerRepository: MongoRepository<StudentAnswer>
+        @InjectRepository(StudentAnswer) private studentAnswerRepository: MongoRepository<StudentAnswer>,
+        private teacherAnswerService: TeacherAnswerService
     ) {}
 
 
     async createStudentAnswerForQuestion(studentId: string, question: Question, studentAnswerInput: CreateStudentAnswerInput): Promise<StudentAnswer> {
-        const questionId = studentAnswerInput.questionId
-        const studentAnswers = this.studentAnswersForQuestion(question, studentAnswerInput)
-        const studentAnswerForQuestion = this.studentAnswerRepository.create({
+        const studentAnswersForQuestion = this.studentAnswersForQuestion(question, studentAnswerInput)
+        const studentAnswer = this.studentAnswerRepository.create({
             id: uuid(),
-            questionId,
+            questionId: question.id,
             studentId,
-            studentAnswers: studentAnswers
+            studentAnswers: studentAnswersForQuestion
         })
 
-         return this.studentAnswerRepository.save(studentAnswerForQuestion)
-    }
+        const teacherAnswers = await this.teacherAnswerService.getTeacherAnswersForQuestion(question.id)
 
-    async getAllAnswers() {
-        return this.studentAnswerRepository.find()
+        return await this.studentAnswerRepository.save(studentAnswer)
     }
 
     async getStudentAnswer(id: ID): Promise<StudentAnswer> {
@@ -50,7 +50,9 @@ export class StudentAnswerService {
 
     studentAnswersForQuestion(question: Question, studentAnswerInput: CreateStudentAnswerInput): string[] {
         const { questionId, singleCorrectAnswerId, multipleCorrectAnswerIds, sortedAnswerIds, plainTextAnswer } = studentAnswerInput
-        switch(question.type) {
+        // below fixes a bug when receiving JSON object...
+        const _type = QuestionAnswerType[question.type] || question.type
+        switch(_type) {
             case QuestionAnswerType.SINGLE_CORRECT_ANSWER: {
                 if(singleCorrectAnswerId) {
                     return [singleCorrectAnswerId]
@@ -80,5 +82,39 @@ export class StudentAnswerService {
                 }
             }
         }
+    }
+
+    static isStudentAnswerCorrect(question: Question, studentAnswer: StudentAnswer, teacherAnswers: TeacherAnswer[]): boolean {
+        let isStudentAnswerCorrect: boolean
+        switch(question.type) {
+            case QuestionAnswerType.SINGLE_CORRECT_ANSWER: {
+                const correctTeacherAnswer = teacherAnswers.find(teacherAnswer => teacherAnswer.isCorrect)
+                isStudentAnswerCorrect = correctTeacherAnswer.id === studentAnswer.id
+            }
+
+            case QuestionAnswerType.MULTIPLE_CORRECT_ANSWERS: {
+                const correctTeacherAnswers = teacherAnswers
+                    .filter(teacherAnswer => teacherAnswer.isCorrect)
+                    .map(teacherAnswer => teacherAnswer.id)
+                isStudentAnswerCorrect = studentAnswer.studentAnswers
+                    .filter(studentAnswer => correctTeacherAnswers.includes(studentAnswer))
+                    .length === correctTeacherAnswers.length
+            }
+
+            case QuestionAnswerType.SORTING: {
+                const correctSortedAnswerIds = teacherAnswers.map(it => it.id)
+                let studentSortedAnswersCorrect = true
+                correctSortedAnswerIds.forEach((correctId, index) => {
+                    const same = correctId === studentAnswer.studentAnswers[index]
+                    if (!same) studentSortedAnswersCorrect = false
+                })
+                isStudentAnswerCorrect = studentSortedAnswersCorrect
+            }
+            case QuestionAnswerType.PLAIN_TEXT_ANSWER: {
+                const correctTeacherAnswers = teacherAnswers.map(teacherAnswer => teacherAnswer.answer)
+                isStudentAnswerCorrect = correctTeacherAnswers.includes(studentAnswer.studentAnswers.join())
+            }
+        }
+        return isStudentAnswerCorrect
     }
 }
