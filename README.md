@@ -20,7 +20,7 @@
         - create a quiz: https://pastebin.com/PjTcmvTr
     - ### 2) Fetching a quiz
         - provide your-quiz-id and assigned-student-id
-        - http://localhost:3001/quiz?quizId=<your-quiz-id>&studentId=<assigned-student-id>
+        - http://localhost:3001/quiz?quizId="your-quiz-id"&studentId="assigned-student-id"
     - ### 3) Answering to the quiz:
         - 
 - ### GraphQl:
