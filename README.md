@@ -18,4 +18,6 @@
         - assign students to a quiz by providing their ids
 - ### 2) Getting questions for a quiz:
     - get a quiz:
-    - answer to quiz: 
+    - answer to quiz:
+- ### 3) Answering to the quiz:
+    -  https://pastebin.com/p70mdLGW
