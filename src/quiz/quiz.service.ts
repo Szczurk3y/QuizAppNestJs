@@ -7,6 +7,12 @@ import { v4 as uuid } from 'uuid'
 import { QuestionService } from "src/question/question.service";
 import { StudentService } from "src/student/student.service";
 import { ID } from 'graphql-ws';
+import { QuizDto } from "./quiz.dto";
+import { QuestionDto } from "src/question/question.dto";
+import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service";
+import { TeacherAnswerDto } from "src/answer-teacher/answer-teacher.dto";
+import { Student } from "src/student/student.entity";
+import { Question } from "src/question/question.entity";
 
 @Injectable()
 export class QuizService {
@@ -14,11 +20,12 @@ export class QuizService {
     constructor(
         @InjectRepository(Quiz) private quizRepository: MongoRepository<Quiz>,
         private questionService: QuestionService,
-        private studentService: StudentService
+        private studentService: StudentService,
+        private teacherAnswerService: TeacherAnswerService
     ) { }
 
 
-    async createQuiz(createQuizInput: CreateQuizInput): Promise<Quiz> {
+    async createQuiz(createQuizInput: CreateQuizInput): Promise<QuizDto> {
         const { name, teacherId, questions, studentIds } = createQuizInput
 
         const teacher = await this.studentService.getStudent(teacherId)
@@ -32,12 +39,12 @@ export class QuizService {
 
         if (isReallyTeacher && studentsExists && questionsCorrect) {
             const quizId = uuid()
-            const questionIds: ID[] = []
+            const questionEntities: Question[] = []
 
             for await (const question of questions) {
                 question.quizId = quizId
-                let _question = await this.questionService.createQuestion(question)
-                questionIds.push(_question.id)
+                let questionEntity = await this.questionService.createQuestion(question)
+                questionEntities.push(questionEntity)
             }
 
             const quiz = this.quizRepository.create({
@@ -45,9 +52,12 @@ export class QuizService {
                 name,
                 teacherId,
                 studentIds,
-                questionIds: questionIds
+                questionIds: questionEntities.map(question => question.id)
             })
-            return this.quizRepository.save(quiz)
+
+            await this.quizRepository.save(quiz)
+
+            return this.createQuizDto(quiz.id, quiz.name, teacher, questionEntities)
         } else {
             switch (true) {
                 case !isReallyTeacher: throw new HttpException("Please provide a teacher.", 400)
@@ -58,18 +68,47 @@ export class QuizService {
 
     }
 
-    async getQuizzes(): Promise<Quiz[]> {
-        return this.quizRepository.find()
+    async getQuiz(quizId: ID, studentId: ID): Promise<QuizDto> {
+        const quiz = await this.quizRepository.findOneBy({ id: quizId })
+        if (quiz == null) throw new HttpException("Quiz not found.", 404)
+
+        const teacher = await this.studentService.getStudent(quiz.teacherId)
+        const isAllowed = [...quiz.studentIds, teacher.id].includes(studentId)
+        if (!isAllowed) throw new HttpException("Student is not allowed to view questions for this quiz.", 401)
+        
+        const questions = await this.questionService.getQuestionsForQuiz(quizId)
+
+        return await this.createQuizDto(quiz.id, quiz.name, teacher, questions)
     }
 
-    async getQuiz(quizId: ID, studentId: ID): Promise<Quiz> {
-        const quiz = await this.quizRepository.findOneBy({ id: quizId })
-        const isAllowed = [...quiz.studentIds, quiz.teacherId].includes(studentId)
+    private async createQuizDto(quizId: ID, quizName: string, teacher: Student, questions: Question[]): Promise<QuizDto> {
+        const questionsDto: QuestionDto[] = []
+        for (const question of questions) {
+            const answers: TeacherAnswerDto[] = (await this.teacherAnswerService.getTeacherAnswersForQuestion(question.id)).map(answer => {
+                return {
+                    id: answer.id,
+                    answer: answer.answer,
+                    isCorrect: answer.isCorrect
+                }
+            })
+            const questionDto: QuestionDto = {
+                id: question.id,
+                question: question.question,
+                type: question.type,
+                answers: answers
+            }
 
-        switch (true) {
-            case quiz == null: throw new HttpException("Quiz not found.", 404)
-            case !isAllowed: throw new HttpException("Student is not allowed to view questions for this quiz.", 401)
-            default: return await this.quizRepository.findOneBy({ id: quizId })
+            questionsDto.push(questionDto)
+            
         }
+        
+        const quizDto: QuizDto = {
+            id: quizId,
+            name: quizName,
+            teacher: teacher,
+            questions: questionsDto
+        }
+
+        return quizDto
     }
 }

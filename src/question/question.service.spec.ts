@@ -1,10 +1,10 @@
 import { v4 as uuid } from 'uuid'
 import { QuestionService } from "./question.service"
 import { QuestionAnswerType } from "./question.type"
-import { CreateTeacherAnswerInput } from "src/teacher-answer/answer-teacher.input"
+import { CreateTeacherAnswerInput } from "src/answer-teacher/answer-teacher.input"
 import { Test, TestingModule } from '@nestjs/testing'
 import { Question } from './question.entity'
-import { TeacherAnswerService } from 'src/teacher-answer/answer-teacher.service'
+import { TeacherAnswerService } from 'src/answer-teacher/answer-teacher.service'
 import { getRepositoryToken } from '@nestjs/typeorm'
 
 describe('QuestionService', () => {

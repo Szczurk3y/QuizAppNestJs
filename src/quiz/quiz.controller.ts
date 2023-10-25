@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
 import { QuizService } from "./quiz.service";
 import { CreateQuizInput } from "./create-quiz.input";
+import { ID } from 'graphql-ws';
 
 @Controller('quiz')
 export class QuizController {
@@ -11,8 +12,8 @@ export class QuizController {
         return this.quizService.createQuiz(createQuizInput)
     }
 
-    @Get(':quizId/:studentId')
-    findOne(@Param('quizId') quizId: string, @Param('studentId') studentId: string) {
+    @Get()
+    findOne(@Query('quizId') quizId: ID, @Query('studentId') studentId: ID) {
         return this.quizService.getQuiz(quizId, studentId)
     }
 }

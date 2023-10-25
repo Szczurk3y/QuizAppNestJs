@@ -14,7 +14,7 @@ export class TeacherAnswer {
     answer: string
 
     @Column()
-    isCorrect: boolean
+    isCorrect: boolean = false
 
     @Column()
     questionId: string

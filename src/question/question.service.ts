@@ -4,9 +4,9 @@ import { Question } from "./question.entity";
 import { MongoRepository } from "typeorm";
 import { CreateQuestionInput } from "./question.input";
 import { v4 as uuid } from 'uuid'
-import { TeacherAnswerService } from "src/teacher-answer/answer-teacher.service";
+import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service";
 import { QuestionAnswerType } from "./question.type";
-import { CreateTeacherAnswerInput } from "src/teacher-answer/answer-teacher.input";
+import { CreateTeacherAnswerInput } from "src/answer-teacher/answer-teacher.input";
 import { ID } from 'graphql-ws';
 
 @Injectable()
@@ -42,31 +42,38 @@ export class QuestionService {
         return this.questionRepository.find({ quizId: quizId })
     }
     
+    /*
+        SINGLE_CORRECT_ANSWER:
+            Only one in provided answers can be set to to correctAnswer: true
+        MULTIPLE_CORRECT_ANSWERS:
+            All answers might be false, and all answers might be true.
+        PLAIN_TEXT_ANSWER:
+            Each answer must be set to correctAnswer: true
+            but the answers should not be displayed on the screen
+            instead a user will answer in a text mode and then we can
+            compare the given answer with our correct answers.
+        SORTING:
+            In sorting mode all answers must be provided in a sorted manner.
+            Each answer must be set to correctAnswer: true
+    */
     static checkQuestionIsCorrect(type: QuestionAnswerType, answers: CreateTeacherAnswerInput[]): Boolean {
         const answersCount = answers.length
         const actualCorrectAnswersCount = answers.filter((answer) => answer.isCorrect).length
-
-        switch(type) {
+        // below fixes a bug when receiving JSON object...
+        const _type = QuestionAnswerType[type] || type
+        switch(_type) {
             case QuestionAnswerType.SINGLE_CORRECT_ANSWER: {
-                // In provided answers, only one can be set to to correctAnswer: true
                 const expectedCorrectAnswers = 1
                 return actualCorrectAnswersCount === expectedCorrectAnswers
             }
             case QuestionAnswerType.MULTIPLE_CORRECT_ANSWERS: {
-                // All answers might be false, and all answers might be true.
                 return true 
             }
             case QuestionAnswerType.PLAIN_TEXT_ANSWER: {
-                // Each answer must be set to correctAnswer: true
-                // but the answers should not be displayed on the screen
-                // instead a user answers in a text mode and then we can
-                // compare the answer with our correct answers.
                 const expectedCorrectAnswer = answersCount
                 return actualCorrectAnswersCount === expectedCorrectAnswer
             }
             case QuestionAnswerType.SORTING: {
-                // In sorting mode all answers must be provided in a sorted manner.
-                // Each answer must be set to correctAnswer: true
                 const expectedCorrectAnswer = answersCount
                 return actualCorrectAnswersCount === expectedCorrectAnswer
             }
