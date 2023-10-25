@@ -1,6 +1,7 @@
 # QuizAppNestJs - Besides The Park
 
 ## Instructions on how to run the app:
+- ### 0) npm run test
 - ### 1) Configure docker
     - Start docker engine 
     - Run follwing commands: 
