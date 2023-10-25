@@ -1,6 +1,6 @@
 import { Field, InputType } from "@nestjs/graphql"
 import { IsUUID } from "class-validator"
-import { CreateStudentAnswerInput } from "src/student-answer/answer-student.input"
+import { CreateStudentAnswerInput } from "src/answer-student/answer-student.input"
 import { ID } from 'graphql-ws';
 
 @InputType()

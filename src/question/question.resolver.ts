@@ -1,7 +1,7 @@
 import { Parent, ResolveField, Resolver } from "@nestjs/graphql";
 import { QuestionType } from "./question.type";
 import { Question } from "./question.entity";
-import { TeacherAnswerService } from "src/teacher-answer/answer-teacher.service";
+import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service";
 
 @Resolver(of => QuestionType)
 export class QuestionResolver {
@@ -10,7 +10,7 @@ export class QuestionResolver {
     ) { }
 
     @ResolveField()
-    async answerIds(@Parent() question: Question) {
+    async answers(@Parent() question: Question) {
         return this.answerService.getTeacherAnswersForQuestion(question.id)
     }
 }

@@ -1,6 +1,6 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { IsNotEmpty, MinLength } from "class-validator";
-import { CreateTeacherAnswerInput } from "src/teacher-answer/answer-teacher.input";
+import { CreateTeacherAnswerInput } from "src/answer-teacher/answer-teacher.input";
 import { QuestionAnswerType } from "./question.type";
 import { ID } from 'graphql-ws';
 
