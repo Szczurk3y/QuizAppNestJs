@@ -22,7 +22,8 @@
         - provide allowed userId and a quizId
         - https://pastebin.com/CKRNU2BB
     - #### 3) Answering to the quiz:
-        - https://pastebin.com/p70mdLGW
+        - https://pastebin.com/LEkxxSQD
+        - in response you will get pretty summary
 - ### Postman:
     - ### Setup:
         - Content-Type : application/json
@@ -32,6 +33,7 @@
         - create a quiz: https://pastebin.com/PjTcmvTr
     - ### 2) Fetching a quiz
         - provide your-quiz-id and assigned-student-id
-        - http://localhost:3001/quiz?quizId="your-quiz-id"&studentId="assigned-student-id"
+        - GET http://localhost:3001/quiz?quizId="your-quiz-id"&studentId="assigned-student-id"
     - ### 3) Answering to the quiz:
-        - 
+        - https://pastebin.com/dTrAwUbn
+        - in JSON response you will get pretty summary
