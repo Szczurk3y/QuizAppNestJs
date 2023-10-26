@@ -1,17 +1,18 @@
 import { Field, InputType } from "@nestjs/graphql"
 import { IsUUID } from "class-validator"
-import { CreateStudentAnswerInput } from "src/student-answer/answer-student.input"
+import { CreateStudentAnswerInput } from "src/answer-student/answer-student.input"
+import { ID } from 'graphql-ws';
 
 @InputType()
-export class AnswerQuizInput {
+export class QuizAnswerInput {
     
     @Field()
     @IsUUID()
-    quizId: string
+    quizId: ID
 
     @Field()
     @IsUUID()
-    studentId: string
+    studentId: ID
     
     @Field(type => [CreateStudentAnswerInput])
     answers: CreateStudentAnswerInput[]

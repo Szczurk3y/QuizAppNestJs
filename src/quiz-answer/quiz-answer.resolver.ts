@@ -1,34 +1,20 @@
-import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Resolver } from "@nestjs/graphql";
 import { QuizAnswerType } from "./quiz-answer.type";
-import { AnswerQuizInput } from "./quiz-answer.input";
+import { QuizAnswerInput } from "./quiz-answer.input";
 import { AnswerQuizService } from "./quiz-answer.service";
-import { StudentAnswerType } from "src/student-answer/answer-student.type";
+import { StudentService } from "src/student/student.service";
 
-@Resolver(of => [QuizAnswerType, StudentAnswerType])
+@Resolver(of => QuizAnswerType)
 export class QuizAnswerResolver {
     constructor(
-        private answerQuizService: AnswerQuizService
+        private answerQuizService: AnswerQuizService,
+        private studentService: StudentService
     ) {}
 
     @Mutation(returns => QuizAnswerType)
-    async createQuizAnswer(
-        @Args('createQuizInput') createQuizInput: AnswerQuizInput,
+    async submitQuizAnswers(
+        @Args('createQuizAnswerInput') createQuizAnswerInput: QuizAnswerInput,
     ) {
-        return this.answerQuizService.submitAnswersForQuiz(createQuizInput)
-    }
-
-    @Query(returns => QuizAnswerType)
-    async quizAnswerForStudent(
-        @Args('quizAnswerId') quizAnswerId: string
-    ) {
-        return this.answerQuizService.getQuizAnswerForStudent(quizAnswerId)
-    }
-        
-    @Query(returns => [StudentAnswerType])
-    async studentAnswerQuizAnswers(
-        @Args('quizId') quizId: string,
-        @Args('studentId') studentId: string
-    ) {
-        return this.answerQuizService.getAnswersForQuizAnswer(quizId, studentId)
+        return this.answerQuizService.submitQuizAnswers(createQuizAnswerInput)
     }
 } 

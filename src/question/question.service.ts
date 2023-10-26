@@ -1,19 +1,19 @@
-import { Inject, Injectable, forwardRef } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Question } from "./question.entity";
 import { MongoRepository } from "typeorm";
 import { CreateQuestionInput } from "./question.input";
 import { v4 as uuid } from 'uuid'
-import { QuizService } from "src/quiz/quiz.service";
-import { TeacherAnswerService } from "src/teacher-answer/answer-teacher.service";
+import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service";
 import { QuestionAnswerType } from "./question.type";
-import { CreateTeacherAnswerInput } from "src/teacher-answer/answer-teacher.input";
+import { CreateTeacherAnswerInput } from "src/answer-teacher/answer-teacher.input";
+import { ID } from 'graphql-ws';
+
 @Injectable()
 export class QuestionService {
 
     constructor(
         @InjectRepository(Question) private questionRepository: MongoRepository<Question>,
-        @Inject(forwardRef(() => QuizService)) private quizService: QuizService,
         private answerService: TeacherAnswerService
     ) { }
 
@@ -22,7 +22,7 @@ export class QuestionService {
     ): Promise<Question> {
         const { question, quizId, type, answers } = createQuestionInput
         const questionId = uuid()
-        const answerIds: string[] = []
+        const answerIds: ID[] = []
         for await (const answer of answers) {
             answer.questionId = questionId
             const answerId = (await this.answerService.createTeacherAnswer(answer)).id
@@ -38,57 +38,44 @@ export class QuestionService {
         return this.questionRepository.save(_question)
     }
 
-    async getQuestions(): Promise<Question[]> {
-        return this.questionRepository.find()
-    }
-
-    async getQuestion(id: string): Promise<Question> {
-        return this.questionRepository.findOneBy({ id })
-    }
-
-    async getQuestionsForQuiz(quizId: string, studentId: string): Promise<Question[]> {
-        const quiz = await this.quizService.getQuiz(quizId)
-        if (quiz == null) {
-            throw Error("Quiz not found.")
-        }
-        const isAllowed = [...quiz.studentIds, quiz.teacherId].includes(studentId)
-        if (isAllowed) {
-            const foundQuestions = await this.questionRepository.find({
-                quizId: quizId,
-            })
-            return foundQuestions
-        } else {
-            throw Error("Student is not allowed to view questions for this quiz.")
-        }
+    async getQuestionsForQuiz(quizId: ID): Promise<Question[]> {
+        return this.questionRepository.find({ quizId: quizId })
     }
     
-    checkQuestionIsCorrect(type: QuestionAnswerType, answers: CreateTeacherAnswerInput[]): Boolean {
+    /*
+        SINGLE_CORRECT_ANSWER:
+            Only one in provided answers can be set to to correctAnswer: true
+        MULTIPLE_CORRECT_ANSWERS:
+            All answers might be false, and all answers might be true.
+        PLAIN_TEXT_ANSWER:
+            Each answer must be set to correctAnswer: true
+            but the answers should not be displayed on the screen
+            instead a user will answer in a text mode and then we can
+            compare the given answer with our correct answers.
+        SORTING:
+            In sorting mode all answers must be provided in a sorted manner.
+            Each answer must be set to correctAnswer: true
+    */
+    static checkQuestionIsCorrect(type: QuestionAnswerType, answers: CreateTeacherAnswerInput[]): Boolean {
         const answersCount = answers.length
-        const actualCorrectAnswers = answers.filter((answer) => answer.isCorrect).length
-
-        switch(type) {
+        const actualCorrectAnswersCount = answers.filter((answer) => answer.isCorrect).length
+        // below fixes a bug when receiving JSON object...
+        const _type = QuestionAnswerType[type] || type
+        switch(_type) {
             case QuestionAnswerType.SINGLE_CORRECT_ANSWER: {
-                // In provided answers, only one can be set to to correctAnswer: true
                 const expectedCorrectAnswers = 1
-                return actualCorrectAnswers == expectedCorrectAnswers
+                return actualCorrectAnswersCount === expectedCorrectAnswers
             }
             case QuestionAnswerType.MULTIPLE_CORRECT_ANSWERS: {
-                // All answers might be false, and all answers might be true.
                 return true 
             }
             case QuestionAnswerType.PLAIN_TEXT_ANSWER: {
-                // Each answer must be set to correctAnswer: true
-                // but the answers should not be displayed on the screen
-                // instead a user answers in a text mode and then we can
-                // compare the answer with our correct answers.
                 const expectedCorrectAnswer = answersCount
-                return actualCorrectAnswers == expectedCorrectAnswer
+                return actualCorrectAnswersCount === expectedCorrectAnswer
             }
             case QuestionAnswerType.SORTING: {
-                // In sorting mode all answers must be provided in a sorted manner.
-                // Each answer must be set to correctAnswer: true
                 const expectedCorrectAnswer = answersCount
-                return actualCorrectAnswers == expectedCorrectAnswer
+                return actualCorrectAnswersCount === expectedCorrectAnswer
             }
         }
     }

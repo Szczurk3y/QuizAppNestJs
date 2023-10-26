@@ -1,5 +1,6 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { MinLength } from "class-validator";
+import { ID } from 'graphql-ws';
 
 @InputType()
 export class CreateTeacherAnswerInput {
@@ -12,5 +13,5 @@ export class CreateTeacherAnswerInput {
     isCorrect: boolean
 
     @Field({ defaultValue: "" })
-    questionId: string
+    questionId: ID
 }

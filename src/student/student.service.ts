@@ -4,12 +4,13 @@ import { Student } from './student.entity';
 import { MongoRepository } from 'typeorm';
 import { CreateStudentInput } from './create-student.input';
 import { v4 as uuid } from 'uuid';
+import { ID } from 'graphql-ws';
 
 @Injectable()
 export class StudentService {
     constructor(
         @InjectRepository(Student) private studentRepository: MongoRepository<Student>
-    ) {}
+    ) { }
 
     async createStudent(createStudentInput: CreateStudentInput): Promise<Student> {
         const { firstName, lastName, isTeacher } = createStudentInput
@@ -27,11 +28,11 @@ export class StudentService {
         return this.studentRepository.find()
     }
 
-    async getStudent(id: string): Promise<Student> {
+    async getStudent(id: ID): Promise<Student> {
         return this.studentRepository.findOneBy({ id })
     }
 
-    async getManyStudents(ids: string[]) {
+    async getManyStudents(ids: ID[]) {
         const foundStudents = await this.studentRepository.find({
             where: {
                 id: {
@@ -43,7 +44,7 @@ export class StudentService {
         return foundStudents
     }
 
-    async isTeacher(id: string): Promise<boolean> {
+    async isTeacher(id: ID): Promise<boolean> {
         const foundStudent = await this.getStudent(id)
         return (foundStudent != null) ? foundStudent.isTeacher : false
     }

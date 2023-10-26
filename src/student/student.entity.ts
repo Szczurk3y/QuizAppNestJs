@@ -1,4 +1,5 @@
 import { Column, Entity, ObjectIdColumn, PrimaryColumn } from "typeorm";
+import { ID } from 'graphql-ws';
 
 @Entity()
 export class Student {
@@ -7,7 +8,7 @@ export class Student {
     _id: string
 
     @PrimaryColumn()
-    id: string
+    id: ID
 
     @Column()
     firstName: string

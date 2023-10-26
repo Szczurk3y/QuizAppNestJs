@@ -5,14 +5,16 @@ import { QuizService } from './quiz.service';
 import { QuizResolver } from './quiz.resolver';
 import { QuestionModule } from 'src/question/question.module';
 import { StudentModule } from 'src/student/student.module';
-import { StudentAnswer } from 'src/student-answer/answer-student.entity';
+import { StudentAnswer } from 'src/answer-student/answer-student.entity';
 import { QuizController } from './quiz.controller';
+import { TeacherAnswerModule } from 'src/answer-teacher/answer-teacher.module';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Quiz, StudentAnswer]),
         forwardRef(() => QuestionModule),
-        StudentModule
+        StudentModule,
+        TeacherAnswerModule
     ],
     controllers: [QuizController],
     providers: [QuizResolver, QuizService],

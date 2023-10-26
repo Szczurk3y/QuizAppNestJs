@@ -1,21 +1,21 @@
-import { StudentAnswer } from "src/student-answer/answer-student.entity";
 import { Column, Entity, ObjectIdColumn, PrimaryColumn } from "typeorm";
+import { ID } from 'graphql-ws';
 
 @Entity()
 export class QuizAnswer {
 
     @ObjectIdColumn()
-    _id: string
+    _id: ID
 
     @PrimaryColumn()
-    id: string
+    id: ID
 
     @Column()
-    quizId: string
+    quizId: ID
 
     @Column()
-    studentId: string
+    studentId: ID
 
-    @Column(type => StudentAnswer)
-    answers: StudentAnswer[]
+    @Column()
+    studentAnswerIds: ID[]
 }
