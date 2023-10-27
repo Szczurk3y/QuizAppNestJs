@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TeacherAnswer } from './answer-teacher.entity';
+import { TeacherAnswer } from '../model/answer-teacher.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TeacherAnswerService as TeacherAnswerService } from './answer-teacher.service';
 

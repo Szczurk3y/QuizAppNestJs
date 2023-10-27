@@ -2,20 +2,20 @@ import { Column, Entity, ObjectIdColumn, PrimaryColumn } from "typeorm";
 import { ID } from 'graphql-ws';
 
 @Entity()
-export class TeacherAnswer {
-
-    @ObjectIdColumn()
-    _id: ID
-
+export class Quiz {
+    
     @PrimaryColumn()
     id: ID
 
     @Column()
-    answer: string
+    name: string
 
     @Column()
-    isCorrect: boolean = false
+    teacherId: ID
 
-    @Column()
-    questionId: string
+    @Column("text", { array: true })
+    studentIds: ID[]
+
+    @Column("text", { array: true })
+    questionIds: ID[]
 }

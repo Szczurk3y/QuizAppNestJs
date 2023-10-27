@@ -1,13 +1,14 @@
 import { Test, TestingModule } from "@nestjs/testing"
 import { StudentAnswerService } from "./answer-student.service"
 import { getRepositoryToken } from "@nestjs/typeorm"
-import { StudentAnswer } from "./answer-student.entity"
-import { Question } from "src/question/question.entity"
+import { StudentAnswer } from "../model/answer-student.entity"
+import { Question } from "src/model/question.entity"
 import { v4 as uuid } from 'uuid'
 import { QuestionAnswerType } from "src/question/question.type"
 import { CreateStudentAnswerInput } from "./answer-student.input"
 import { HttpException } from "@nestjs/common"
 import { ID } from 'graphql-ws';
+import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service"
 
 describe("StudentAnswerService", () => {
     
@@ -30,7 +31,6 @@ describe("StudentAnswerService", () => {
         const questionId = uuid()
         const answerId: string = uuid()
         const question: Question = {
-            _id: uuid(),
             id: questionId,
             quizId: uuid(),
             question: "Is Paris a capital of France?",
@@ -46,7 +46,7 @@ describe("StudentAnswerService", () => {
         }
         try {
             const expectedAnswer = [answerId]
-            const answers = studentAnswerService.studentAnswersForQuestion(question, studentAnswers)
+            const answers = studentAnswerService.collectStudentAnswersFromInput(question, studentAnswers)
             expect(answers).toEqual(expectedAnswer)
         } catch(error) {}
     })
@@ -56,7 +56,6 @@ describe("StudentAnswerService", () => {
         const answer1Id: ID = uuid()
         const answer2Id: ID = uuid()
         const question: Question = {
-            _id: uuid(),
             id: questionId,
             quizId: uuid(),
             question: "What is the famous phrase from Star Wars?",
@@ -73,7 +72,7 @@ describe("StudentAnswerService", () => {
         }
 
         try {
-            studentAnswerService.studentAnswersForQuestion(question, studentAnswers)
+            studentAnswerService.collectStudentAnswersFromInput(question, studentAnswers)
         } catch(error) {
             expect(error).toBeInstanceOf(HttpException)
         }

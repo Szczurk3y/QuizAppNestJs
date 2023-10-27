@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Question } from "./question.entity";
-import { MongoRepository } from "typeorm";
+import { Question } from "../model/question.entity";
+import { Repository } from "typeorm";
 import { CreateQuestionInput } from "./question.input";
 import { v4 as uuid } from 'uuid'
 import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service";
@@ -13,7 +13,7 @@ import { ID } from 'graphql-ws';
 export class QuestionService {
 
     constructor(
-        @InjectRepository(Question) private questionRepository: MongoRepository<Question>,
+        @InjectRepository(Question) private questionRepository: Repository<Question>,
         private answerService: TeacherAnswerService
     ) { }
 
@@ -39,7 +39,11 @@ export class QuestionService {
     }
 
     async getQuestionsForQuiz(quizId: ID): Promise<Question[]> {
-        return this.questionRepository.find({ quizId: quizId })
+        return this.questionRepository.find({ 
+            where: { 
+                quizId: quizId
+            } 
+        })
     }
     
     /*

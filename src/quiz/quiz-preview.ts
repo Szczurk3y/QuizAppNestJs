@@ -1,4 +1,4 @@
-import { Question } from "src/question/question.entity";
+import { Question } from "src/model/question.entity";
 
 export class QuizPreview {
 

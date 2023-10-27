@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing"
 import { v4 as uuid } from 'uuid'
 import { StudentService } from "src/student/student.service"
-import { Student } from "./student.entity"
+import { Student } from "../model/student.entity"
 import { getRepositoryToken } from "@nestjs/typeorm"
 import { StudentController } from "./student.controller"
 import { CreateStudentInput } from "./create-student.input"
@@ -58,7 +58,6 @@ describe("Student Service", () => {
     let mockStudentRepository = {
         find: jest.fn(input => {
             return [{
-                _id: uuid(),
                 id: uuid(),
                 firstName: "John",
                 lastName: "Doe",
@@ -82,7 +81,6 @@ describe("Student Service", () => {
 
     it("should return true if student is a teacher", () => {
         const student: Student = {
-            _id: uuid(),
             id: uuid(),
             firstName: "",
             lastName: "",
@@ -96,7 +94,6 @@ describe("Student Service", () => {
     it("Should find students", async () => {
         const foundStudents = await studentService.getStudents()
         expect(foundStudents).toContainEqual({
-            _id: expect.any(String),
             id: expect.any(String),
             firstName: "John",
             lastName: "Doe",

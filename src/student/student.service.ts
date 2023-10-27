@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Student } from './student.entity';
-import { MongoRepository } from 'typeorm';
+import { Student } from '../model/student.entity';
+import { Repository } from 'typeorm';
 import { CreateStudentInput } from './create-student.input';
 import { v4 as uuid } from 'uuid';
 import { ID } from 'graphql-ws';
@@ -9,7 +9,7 @@ import { ID } from 'graphql-ws';
 @Injectable()
 export class StudentService {
     constructor(
-        @InjectRepository(Student) private studentRepository: MongoRepository<Student>
+        @InjectRepository(Student) private studentRepository: Repository<Student>
     ) { }
 
     async createStudent(createStudentInput: CreateStudentInput): Promise<Student> {
@@ -32,15 +32,12 @@ export class StudentService {
         return this.studentRepository.findOneBy({ id })
     }
 
-    async getManyStudents(ids: ID[]) {
-        const foundStudents = await this.studentRepository.find({
-            where: {
-                id: {
-                    $in: ids
-                },
-                isTeacher: false
-            }
-        })
+    async getManyStudents(studentIds: ID[]) {
+        const foundStudents = await this.studentRepository
+            .createQueryBuilder("student")
+            .where("student.id IN (:...ids)", { ids: studentIds})
+            .getMany()
+            
         return foundStudents
     }
 
