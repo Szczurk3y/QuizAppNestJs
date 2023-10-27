@@ -9,7 +9,10 @@
       - docker compose up --build
 - ### 2) You shoud be able to enter the following sites:
     - http://localhost:3001/graphql
-    - http://localhost:8080/adminer login: postgres:postgres
+    - http://localhost:8080/adminer
+        -  login: postgres:postgres
+        -  database: quizapp
+        -  database type: postgresql
 ## Instructions on how to work with the app.:
 - ### GraphQl:
     - #### 1) Creating a quiz:
