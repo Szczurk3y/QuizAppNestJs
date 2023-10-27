@@ -1,5 +1,5 @@
 # QuizAppNestJs - Besides The Park
-- WIP: implementing postgres instead of mongodb (feat/postgresql)
+
 ## Instructions on how to run the app:
 - ### Tests: npm run test
 - ### 1) Configure docker
