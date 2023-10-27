@@ -6,7 +6,8 @@ import { StudentService } from "src/student/student.service"
 import { QuestionService } from "src/question/question.service"
 import { CreateQuizInput } from "./create-quiz.input"
 import { getRepositoryToken } from "@nestjs/typeorm"
-import { Quiz } from "./quiz.entity"
+import { Quiz } from "../model/quiz.entity"
+import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service"
 
 describe("QuizController", () => {
     let quizController: QuizController
@@ -86,6 +87,10 @@ describe('QuizService', () => {
                 },
                 {
                     provide: StudentService,
+                    useValue: {}
+                },
+                {
+                    provide: TeacherAnswerService,
                     useValue: {}
                 }
         ]

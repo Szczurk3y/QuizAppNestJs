@@ -1,11 +1,11 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { Quiz } from './quiz.entity';
+import { Quiz } from '../model/quiz.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QuizService } from './quiz.service';
 import { QuizResolver } from './quiz.resolver';
 import { QuestionModule } from 'src/question/question.module';
 import { StudentModule } from 'src/student/student.module';
-import { StudentAnswer } from 'src/answer-student/answer-student.entity';
+import { StudentAnswer } from 'src/model/answer-student.entity';
 import { QuizController } from './quiz.controller';
 import { TeacherAnswerModule } from 'src/answer-teacher/answer-teacher.module';
 

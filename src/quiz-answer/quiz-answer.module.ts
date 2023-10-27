@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { QuizAnswer } from './quiz-answer.entity';
+import { QuizAnswer } from '../model/quiz-answer.entity';
 import { StudentModule } from 'src/student/student.module';
 import { QuizAnswerResolver } from './quiz-answer.resolver';
 import { AnswerQuizService } from './quiz-answer.service';

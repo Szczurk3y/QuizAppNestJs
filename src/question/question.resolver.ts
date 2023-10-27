@@ -1,6 +1,6 @@
 import { Parent, ResolveField, Resolver } from "@nestjs/graphql";
 import { QuestionType } from "./question.type";
-import { Question } from "./question.entity";
+import { Question } from "../model/question.entity";
 import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service";
 
 @Resolver(of => QuestionType)

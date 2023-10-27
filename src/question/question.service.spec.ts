@@ -3,7 +3,7 @@ import { QuestionService } from "./question.service"
 import { QuestionAnswerType } from "./question.type"
 import { CreateTeacherAnswerInput } from "src/answer-teacher/answer-teacher.input"
 import { Test, TestingModule } from '@nestjs/testing'
-import { Question } from './question.entity'
+import { Question } from '../model/question.entity'
 import { TeacherAnswerService } from 'src/answer-teacher/answer-teacher.service'
 import { getRepositoryToken } from '@nestjs/typeorm'
 

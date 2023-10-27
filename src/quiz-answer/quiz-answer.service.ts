@@ -1,19 +1,19 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { MongoRepository } from "typeorm";
+import { MongoRepository, Repository } from "typeorm";
 import { v4 as uuid } from 'uuid'
-import { QuizAnswer } from "../quiz-answer/quiz-answer.entity";
+import { QuizAnswer } from "../model/quiz-answer.entity";
 import { QuizAnswerInput } from "./quiz-answer.input";
 import { QuestionService } from "src/question/question.service";
 import { StudentService } from "src/student/student.service";
 import { StudentAnswerService } from "src/answer-student/answer-student.service";
 import { ID } from 'graphql-ws';
 import { QuizAnswerDto } from "./quiz-answer.dto";
-import { Student } from "src/student/student.entity";
-import { StudentAnswer } from "src/answer-student/answer-student.entity";
+import { Student } from "src/model/student.entity";
+import { StudentAnswer } from "src/model/answer-student.entity";
 import { QuizService } from "src/quiz/quiz.service";
 import { StudentAnswerDto } from "src/answer-student/answer-student.dto";
-import { Question } from "src/question/question.entity";
+import { Question } from "src/model/question.entity";
 import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service";
 import { QuestionAnswerType } from "src/question/question.type";
 import { StudentDto } from "src/student/student.dto";
@@ -22,7 +22,7 @@ import { StudentDto } from "src/student/student.dto";
 export class AnswerQuizService {
 
     constructor(
-        @InjectRepository(QuizAnswer) private quizAnswerRepository: MongoRepository<QuizAnswer>,
+        @InjectRepository(QuizAnswer) private quizAnswerRepository: Repository<QuizAnswer>,
         private questionService: QuestionService,
         private studentService: StudentService,
         private quizService: QuizService,
@@ -48,7 +48,7 @@ export class AnswerQuizService {
                 const matchingQuestion = foundQuestions.find((question) => question.id === answer.questionId)
                 try {
                     // if below doesn't throw HttpException it means student answer can be inserted into db
-                    this.studentAnswerService.studentAnswersForQuestion(matchingQuestion, answer)
+                    this.studentAnswerService.collectStudentAnswersFromInput(matchingQuestion, answer)
                 } catch(exception) {
                     // Throwing given exception in order not to perform further with student answers
                     throw exception

@@ -1,5 +1,5 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { Question } from './question.entity';
+import { Question } from '../model/question.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QuestionService } from './question.service';
 import { QuizModule } from 'src/quiz/quiz.module';

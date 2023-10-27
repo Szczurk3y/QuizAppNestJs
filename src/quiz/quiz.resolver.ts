@@ -3,7 +3,7 @@ import { QuizDtoType } from "./quiz-dto.type";
 import { QuizService } from "./quiz.service";
 import { CreateQuizInput } from "./create-quiz.input";
 import { QuestionService } from "src/question/question.service";
-import { Quiz } from "./quiz.entity";
+import { Quiz } from "../model/quiz.entity";
 import { ID } from 'graphql-ws';
 
 @Resolver(of => QuizDtoType)

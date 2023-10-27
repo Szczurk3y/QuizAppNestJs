@@ -4,9 +4,6 @@ import { ID } from 'graphql-ws';
 @Entity()
 export class QuizAnswer {
 
-    @ObjectIdColumn()
-    _id: ID
-
     @PrimaryColumn()
     id: ID
 
@@ -16,6 +13,6 @@ export class QuizAnswer {
     @Column()
     studentId: ID
 
-    @Column()
+    @Column("text", { array: true })
     studentAnswerIds: ID[]
 }

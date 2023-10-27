@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Quiz } from "./quiz.entity";
-import { MongoRepository } from "typeorm";
+import { Quiz } from "../model/quiz.entity";
+import { Repository } from "typeorm";
 import { CreateQuizInput } from "./create-quiz.input";
 import { v4 as uuid } from 'uuid'
 import { QuestionService } from "src/question/question.service";
@@ -11,14 +11,14 @@ import { QuizDto } from "./quiz.dto";
 import { QuestionDto } from "src/question/question.dto";
 import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service";
 import { TeacherAnswerDto } from "src/answer-teacher/answer-teacher.dto";
-import { Student } from "src/student/student.entity";
-import { Question } from "src/question/question.entity";
+import { Student } from "src/model/student.entity";
+import { Question } from "src/model/question.entity";
 
 @Injectable()
 export class QuizService {
 
     constructor(
-        @InjectRepository(Quiz) private quizRepository: MongoRepository<Quiz>,
+        @InjectRepository(Quiz) private quizRepository: Repository<Quiz>,
         private questionService: QuestionService,
         private studentService: StudentService,
         private teacherAnswerService: TeacherAnswerService

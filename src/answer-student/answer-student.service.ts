@@ -1,26 +1,23 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { StudentAnswer } from "./answer-student.entity";
-import { MongoRepository } from "typeorm";
+import { StudentAnswer } from "../model/answer-student.entity";
+import { Repository } from "typeorm";
 import { CreateStudentAnswerInput } from "./answer-student.input";
 import { v4 as uuid } from 'uuid'
 import { QuestionAnswerType } from "src/question/question.type";
-import { Question } from "src/question/question.entity";
-import { ID } from 'graphql-ws';
-import { TeacherAnswer } from "src/answer-teacher/answer-teacher.entity";
-import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service";
+import { Question } from "src/model/question.entity";
+import { TeacherAnswer } from "src/model/answer-teacher.entity";
 
 @Injectable()
 export class StudentAnswerService {
 
     constructor(
-        @InjectRepository(StudentAnswer) private studentAnswerRepository: MongoRepository<StudentAnswer>,
-        private teacherAnswerService: TeacherAnswerService
+        @InjectRepository(StudentAnswer) private studentAnswerRepository: Repository<StudentAnswer>
     ) {}
 
 
     async createStudentAnswerForQuestion(studentId: string, question: Question, studentAnswerInput: CreateStudentAnswerInput): Promise<StudentAnswer> {
-        const studentAnswersForQuestion = this.studentAnswersForQuestion(question, studentAnswerInput)
+        const studentAnswersForQuestion = this.collectStudentAnswersFromInput(question, studentAnswerInput)
         const studentAnswer = this.studentAnswerRepository.create({
             id: uuid(),
             questionId: question.id,
@@ -28,27 +25,10 @@ export class StudentAnswerService {
             studentAnswers: studentAnswersForQuestion
         })
 
-        const teacherAnswers = await this.teacherAnswerService.getTeacherAnswersForQuestion(question.id)
-
         return await this.studentAnswerRepository.save(studentAnswer)
     }
 
-    async getStudentAnswer(id: ID): Promise<StudentAnswer> {
-        const found = await this.studentAnswerRepository.findOneBy({ id })
-        return await this.studentAnswerRepository.findOneBy({ id })
-    }
-
-    async getStudentAnswers(ids: ID[]): Promise<StudentAnswer[]> {
-        return await this.studentAnswerRepository.find({ 
-            where: {
-                id: { 
-                    $in: ids 
-                }
-            }
-        })
-    }
-
-    studentAnswersForQuestion(question: Question, studentAnswerInput: CreateStudentAnswerInput): string[] {
+    collectStudentAnswersFromInput(question: Question, studentAnswerInput: CreateStudentAnswerInput): string[] {
         const { questionId, singleCorrectAnswerId, multipleCorrectAnswerIds, sortedAnswerIds, plainTextAnswer } = studentAnswerInput
         // below fixes a bug when receiving JSON object...
         const _type = QuestionAnswerType[question.type] || question.type

@@ -3,10 +3,7 @@ import { ID } from 'graphql-ws';
 
 @Entity()
 export class StudentAnswer {
-
-    @ObjectIdColumn()
-    _id: ID
-
+    
     @PrimaryColumn()
     id: ID
 
@@ -18,6 +15,6 @@ export class StudentAnswer {
 
     // contains selected answers ids if question type was NOT a plain_text_answer
     // contains some plain text like "abc" if type was a plain_text_answer
-    @Column()
+    @Column("text", { array: true })
     studentAnswers: string[]
 }
