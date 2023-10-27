@@ -4,9 +4,6 @@ import { ID } from 'graphql-ws';
 @Entity()
 export class Student {
 
-    @ObjectIdColumn()
-    _id: string
-
     @PrimaryColumn()
     id: ID
 

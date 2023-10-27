@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { StudentAnswer } from "./answer-student.entity";
+import { StudentAnswer } from "../model/answer-student.entity";
 import { StudentAnswerService } from "./answer-student.service";
 import { StudentAnswerResolver } from "./answer-student.resolver";
 import { TeacherAnswerModule } from "src/answer-teacher/answer-teacher.module";
