@@ -42,8 +42,7 @@ export class QuizService {
             const questionEntities: Question[] = []
 
             for await (const question of questions) {
-                question.quizId = quizId
-                let questionEntity = await this.questionService.createQuestion(question)
+                let questionEntity = await this.questionService.createQuestion(quizId, question)
                 questionEntities.push(questionEntity)
             }
 

@@ -12,6 +12,6 @@ export class CreateTeacherAnswerInput {
     @Field({ defaultValue: false })
     isCorrect: boolean
 
-    @Field({ defaultValue: "" })
-    questionId: ID
+    // @Field({ defaultValue: "" })
+    // questionId: ID
 }
