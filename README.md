@@ -31,12 +31,12 @@
     - ### Setup:
         - Content-Type : application/json
     - ### 1) Creating a quiz
-        - create a teacher: https://pastebin.com/B8U1wv08
-        - create a student: https://pastebin.com/wiQQ7bXG
-        - create a quiz: https://pastebin.com/PjTcmvTr
+        - POST create a teacher: https://pastebin.com/B8U1wv08
+        - POST create a student: https://pastebin.com/wiQQ7bXG
+        - POST create a quiz: https://pastebin.com/PjTcmvTr
     - ### 2) Fetching a quiz
         - provide your-quiz-id and assigned-student-id
         - GET http://localhost:3001/quiz?quizId="your-quiz-id"&studentId="assigned-student-id"
-    - ### 3) Answering to the quiz:
-        - https://pastebin.com/dTrAwUbn
+    - ### 3) Submit quiz answers:
+        - POST https://pastebin.com/dTrAwUbn
         - in JSON response you will get a pretty summary
