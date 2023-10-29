@@ -70,7 +70,7 @@ export class QuizService {
 
     async getQuiz(quizId: ID, studentId: ID): Promise<QuizDto> {
         const quiz = await this.quizRepository.findOneBy({ id: quizId })
-        if (quiz == null) throw new HttpException("Quiz not found.", 404)
+        if (quiz == null) throw new HttpException("Quiz not found.", 400)
 
         const teacher = await this.studentService.getStudent(quiz.teacherId)
         const isAllowed = [...quiz.studentIds, teacher.id].includes(studentId)

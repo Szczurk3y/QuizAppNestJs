@@ -8,7 +8,6 @@ import { QuestionAnswerType } from "src/question/question.type"
 import { CreateStudentAnswerInput } from "./answer-student.input"
 import { HttpException } from "@nestjs/common"
 import { ID } from 'graphql-ws';
-import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service"
 
 describe("StudentAnswerService", () => {
     
@@ -37,17 +36,11 @@ describe("StudentAnswerService", () => {
             type: QuestionAnswerType.SINGLE_CORRECT_ANSWER,
             answerIds: [answerId]
         }
-        const studentAnswers: CreateStudentAnswerInput = {
-            questionId,
-            singleCorrectAnswerId: answerId,
-            multipleCorrectAnswerIds: [],
-            plainTextAnswer: "",
-            sortedAnswerIds: []
-        }
+        const studentAnswerIds = [answerId]
+        const plainTextAnswer = ""
         try {
-            const expectedAnswer = [answerId]
-            const answers = studentAnswerService.collectStudentAnswersFromInput(question, studentAnswers)
-            expect(answers).toEqual(expectedAnswer)
+            const answers = studentAnswerService.getAnswerOrThrow(question, studentAnswerIds, plainTextAnswer)
+            expect(answers).toEqual(studentAnswerIds)
         } catch(error) {}
     })
 
@@ -63,16 +56,11 @@ describe("StudentAnswerService", () => {
             answerIds: [answer1Id]
         }
         // simulate wrong input for question type
-        const studentAnswers: CreateStudentAnswerInput = {
-            questionId,
-            singleCorrectAnswerId: "",
-            multipleCorrectAnswerIds: [answer1Id, answer2Id],
-            plainTextAnswer: "",
-            sortedAnswerIds: []
-        }
+        const studentAnswerIds = [answer1Id, answer2Id]
+        const plainTextAnswer = ""
 
         try {
-            studentAnswerService.collectStudentAnswersFromInput(question, studentAnswers)
+            studentAnswerService.getAnswerOrThrow(question, studentAnswerIds, plainTextAnswer)
         } catch(error) {
             expect(error).toBeInstanceOf(HttpException)
         }

@@ -15,5 +15,5 @@ export class QuizAnswerInput {
     studentId: ID
     
     @Field(type => [CreateStudentAnswerInput])
-    answers: CreateStudentAnswerInput[]
+    studentAnswerInputs: CreateStudentAnswerInput[]
 }

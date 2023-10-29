@@ -31,54 +31,36 @@ export class AnswerQuizService {
     ) {}
 
     async submitQuizAnswers(answerQuizInput: QuizAnswerInput): Promise<QuizAnswerDto> {
-        const { quizId, studentId, answers } = answerQuizInput
+        const { quizId, studentId, studentAnswerInputs } = answerQuizInput
 
-        const foundQuiz = await this.quizService.getQuiz(quizId, studentId)
-        const foundQuestions = await this.questionService.getQuestionsForQuiz(answerQuizInput.quizId)
         const foundStudent = await this.studentService.getStudent(studentId)
+        const foundQuiz = await this.quizService.getQuiz(quizId, foundStudent.id)
+        const foundQuestions = await this.questionService.getQuestionsForQuiz(answerQuizInput.quizId)
 
-        // Validations:
-        const checkQuizExists = foundQuiz != null
-        const checkStudentExists = foundStudent != null
-        const checkAllQuestionsAnswered = foundQuestions.length === answers.length
+        const allQuestionsAnswered = foundQuestions.length === studentAnswerInputs.length
+        if (!allQuestionsAnswered) throw new HttpException("Please answer to all of the questions.", 400)
 
-        if (checkQuizExists && checkStudentExists && checkAllQuestionsAnswered) {
-            // Validating student answers before they are saved in db
-            for (const answer of answers) {
-                const matchingQuestion = foundQuestions.find((question) => question.id === answer.questionId)
-                try {
-                    // if below doesn't throw HttpException it means student answer can be inserted into db
-                    this.studentAnswerService.collectStudentAnswersFromInput(matchingQuestion, answer)
-                } catch(exception) {
-                    // Throwing given exception in order not to perform further with student answers
-                    throw exception
-                }
-            }
+        const validateAnswersInputs = studentAnswerInputs.every(input => {
+            const matchingQuestion = foundQuestions.find((question) => question.id === input.questionId)
+            this.studentAnswerService.getAnswerOrThrow(matchingQuestion, input.studentAnswerIds, input.plainTextAnswer)
+        })
 
-            // Performing saving student answers to db
-            const studentAnswers: StudentAnswer[] = []
-            for await (const answer of answers) {
-                const matchingQuestion = foundQuestions.find((question) => question.id === answer.questionId)
-                const studentAnswer = await this.studentAnswerService.createStudentAnswerForQuestion(studentId, matchingQuestion, answer)
-                studentAnswers.push(studentAnswer)
-            }
-
-            const quizAnswer = this.quizAnswerRepository.create({
-                id: uuid(),
-                quizId: quizId,
-                studentId: studentId,
-                studentAnswerIds: studentAnswers.map(answer => answer.id)
-            })
-            await this.quizAnswerRepository.save(quizAnswer)
-
-            return await this.createQuizAnswerDto(quizAnswer.id, foundQuiz.name, foundStudent, foundQuestions, studentAnswers)
-        } else {
-            switch(true) {
-                case !checkQuizExists: throw new HttpException("Quiz not found", 404)
-                case !checkStudentExists: throw new HttpException("Student not found", 404)
-                case !checkAllQuestionsAnswered: throw new HttpException("Please answer to all of the questions.", 400)
-            }
+        const studentAnswers: StudentAnswer[] = []
+        for await (const answer of studentAnswerInputs) {
+            const matchingQuestion = foundQuestions.find((question) => question.id === answer.questionId)
+            const studentAnswer = await this.studentAnswerService.createStudentAnswerForQuestion(studentId, matchingQuestion, answer)
+            studentAnswers.push(studentAnswer)
         }
+
+        const quizAnswer = this.quizAnswerRepository.create({
+            id: uuid(),
+            quizId: quizId,
+            studentId: studentId,
+            studentAnswerIds: studentAnswers.map(answer => answer.id)
+        })
+        await this.quizAnswerRepository.save(quizAnswer)
+
+        return await this.createQuizAnswerDto(quizAnswer.id, foundQuiz.name, foundStudent, foundQuestions, studentAnswers)
     }
 
     private async createQuizAnswerDto(id: ID, quizName: string, student: Student, questions: Question[], studentAnswers: StudentAnswer[]): Promise<QuizAnswerDto>  {

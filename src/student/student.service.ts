@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from '../model/student.entity';
 import { Repository } from 'typeorm';
@@ -29,7 +29,9 @@ export class StudentService {
     }
 
     async getStudent(id: ID): Promise<Student> {
-        return this.studentRepository.findOneBy({ id })
+        const foundStudent = await this.studentRepository.findOneBy({ id })
+        if (foundStudent == null) throw new HttpException("Student not found.", 400)
+        return foundStudent
     }
 
     async getManyStudents(studentIds: ID[]) {
