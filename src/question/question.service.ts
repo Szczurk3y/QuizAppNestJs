@@ -57,7 +57,7 @@ export class QuestionService {
             instead a user will answer in a text mode and then we can
             compare the given answer with our correct answers.
         SORTING:
-            In sorting mode all answers must be provided in a sorted manner.
+            In a sorting mode all answers must be provided in a sorted manner.
             Each answer must be set to correctAnswer: true
     */
     static checkQuestionIsCorrect(type: QuestionAnswerType, answers: CreateTeacherAnswerInput[]): Boolean {
