@@ -18,14 +18,14 @@ export class QuestionService {
     ) { }
 
     async createQuestion(
+        quizId: ID,
         createQuestionInput: CreateQuestionInput
     ): Promise<Question> {
-        const { question, quizId, type, answers } = createQuestionInput
+        const { question, type, answers } = createQuestionInput
         const questionId = uuid()
         const answerIds: ID[] = []
         for await (const answer of answers) {
-            answer.questionId = questionId
-            const answerId = (await this.answerService.createTeacherAnswer(answer)).id
+            const answerId = (await this.answerService.createTeacherAnswer(questionId, answer)).id
             answerIds.push(answerId)
         }
         const _question = this.questionRepository.create({
@@ -51,14 +51,14 @@ export class QuestionService {
             Only one in provided answers can be set to to correctAnswer: true
         MULTIPLE_CORRECT_ANSWERS:
             All answers might be false, and all answers might be true.
+        SORTING:
+            In a sorting mode all answers must be provided in a sorted manner.
+            Each answer must be set to correctAnswer: true
         PLAIN_TEXT_ANSWER:
             Each answer must be set to correctAnswer: true
             but the answers should not be displayed on the screen
             instead a user will answer in a text mode and then we can
             compare the given answer with our correct answers.
-        SORTING:
-            In sorting mode all answers must be provided in a sorted manner.
-            Each answer must be set to correctAnswer: true
     */
     static checkQuestionIsCorrect(type: QuestionAnswerType, answers: CreateTeacherAnswerInput[]): Boolean {
         const answersCount = answers.length

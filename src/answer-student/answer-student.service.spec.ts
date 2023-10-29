@@ -5,10 +5,7 @@ import { StudentAnswer } from "../model/answer-student.entity"
 import { Question } from "src/model/question.entity"
 import { v4 as uuid } from 'uuid'
 import { QuestionAnswerType } from "src/question/question.type"
-import { CreateStudentAnswerInput } from "./answer-student.input"
 import { HttpException } from "@nestjs/common"
-import { ID } from 'graphql-ws';
-import { TeacherAnswerService } from "src/answer-teacher/answer-teacher.service"
 
 describe("StudentAnswerService", () => {
     
@@ -27,54 +24,136 @@ describe("StudentAnswerService", () => {
         studentAnswerService = module.get<StudentAnswerService>(StudentAnswerService)
     })
 
-    it ("should return correct answers for questions", () => {
-        const questionId = uuid()
-        const answerId: string = uuid()
+    it ("should be defined", () => {
+        expect(studentAnswerService).toBeDefined()
+    })
+
+    it ("should return answer for question of type: SINGLE CORRECT ANSWER", () => {
         const question: Question = {
-            id: questionId,
+            id: uuid(),
             quizId: uuid(),
             question: "Is Paris a capital of France?",
             type: QuestionAnswerType.SINGLE_CORRECT_ANSWER,
-            answerIds: [answerId]
+            answerIds: [uuid(), uuid(), uuid(), uuid()]
         }
-        const studentAnswers: CreateStudentAnswerInput = {
-            questionId,
-            singleCorrectAnswerId: answerId,
-            multipleCorrectAnswerIds: [],
-            plainTextAnswer: "",
-            sortedAnswerIds: []
-        }
+        const studentAnswerIds = [question.answerIds[0]]
         try {
-            const expectedAnswer = [answerId]
-            const answers = studentAnswerService.collectStudentAnswersFromInput(question, studentAnswers)
-            expect(answers).toEqual(expectedAnswer)
+            const answer = studentAnswerService.getAnswerOrThrow(question, studentAnswerIds, "")
+            expect(answer).toEqual(studentAnswerIds)
         } catch(error) {}
     })
 
-    it ("should throw exception on incorrect answers for questions", () => {
-        const questionId = uuid()
-        const answer1Id: ID = uuid()
-        const answer2Id: ID = uuid()
+    it ("should throw an error for question of type: SINGLE CORRECT ANSWER", () => {
         const question: Question = {
-            id: questionId,
+            id: uuid(),
             quizId: uuid(),
-            question: "What is the famous phrase from Star Wars?",
-            type: QuestionAnswerType.PLAIN_TEXT_ANSWER,
-            answerIds: [answer1Id]
+            question: "Is Paris a capital of France?",
+            type: QuestionAnswerType.SINGLE_CORRECT_ANSWER,
+            answerIds: [uuid(), uuid(), uuid(), uuid()]
         }
-        // simulate wrong input for question type
-        const studentAnswers: CreateStudentAnswerInput = {
-            questionId,
-            singleCorrectAnswerId: "",
-            multipleCorrectAnswerIds: [answer1Id, answer2Id],
-            plainTextAnswer: "",
-            sortedAnswerIds: []
-        }
-
+        const studentAnswerIds = [question.answerIds[0], question.answerIds[2]]
         try {
-            studentAnswerService.collectStudentAnswersFromInput(question, studentAnswers)
+            studentAnswerService.getAnswerOrThrow(question, studentAnswerIds, "")
         } catch(error) {
             expect(error).toBeInstanceOf(HttpException)
+            expect(error.status).toEqual(400)
+        }
+    })
+
+    it ("should return answer for question of type: MULTIPLE CORRECT ANSWERS", () => {
+        const question: Question = {
+            id: uuid(),
+            quizId: uuid(),
+            question: "Which of the following programming languages are object-oriented?",
+            type: QuestionAnswerType.MULTIPLE_CORRECT_ANSWERS,
+            answerIds: [uuid(), uuid(), uuid(), uuid()]
+        }
+        const studentAnswerIds = [question.answerIds[0], question.answerIds[3]]
+        try {
+            const answer = studentAnswerService.getAnswerOrThrow(question, studentAnswerIds, "")
+            expect(answer).toEqual(studentAnswerIds)
+        } catch(error) {}
+    })
+
+    it ("should throw an error for question of type: MULTIPLE CORRECT ANSWERS", () => {
+        const question: Question = {
+            id: uuid(),
+            quizId: uuid(),
+            question: "Which of the following programming languages are object-oriented?",
+            type: QuestionAnswerType.MULTIPLE_CORRECT_ANSWERS,
+            answerIds: [uuid(), uuid(), uuid(), uuid()]
+        }
+        const answerNotInQuestionAnswers = uuid()
+        const studentAnswerIds = [answerNotInQuestionAnswers, question.answerIds[2]]
+        try {
+            studentAnswerService.getAnswerOrThrow(question, studentAnswerIds, "")
+        } catch(error) {
+            expect(error).toBeInstanceOf(HttpException)
+            expect(error.status).toEqual(400)
+        }
+    })
+
+    it ("should return answer for question of type: SORTING", () => {
+        const question: Question = {
+            id: uuid(),
+            quizId: uuid(),
+            question: "Arrange the following events in chronological order.",
+            type: QuestionAnswerType.SORTING,
+            answerIds: [uuid(), uuid(), uuid()]
+        }
+        const studentAnswerIds = [question.answerIds[0], question.answerIds[1], question.answerIds[2]]
+        try {
+            const answer = studentAnswerService.getAnswerOrThrow(question, studentAnswerIds, "")
+            expect(answer).toEqual(studentAnswerIds)
+        } catch(error) {}
+    })
+
+    it ("should throw an error for question of type: SORTING", () => {
+        const question: Question = {
+            id: uuid(),
+            quizId: uuid(),
+            question: "Which of the following programming languages are object-oriented?",
+            type: QuestionAnswerType.SORTING,
+            answerIds: [uuid(), uuid(), uuid()]
+        }
+        const studentAnswerIds =  [question.answerIds[0], question.answerIds[1]]
+        try {
+            studentAnswerService.getAnswerOrThrow(question, studentAnswerIds, "")
+        } catch(error) {
+            expect(error).toBeInstanceOf(HttpException)
+            expect((error as HttpException).message).toEqual("Provide all sorted answers ids for Question type: Sorting")
+        }
+    })
+
+    it ("should return answer for question of type: PLAIN TEXT ANSWER", () => {
+        const question: Question = {
+            id: uuid(),
+            quizId: uuid(),
+            question: "What is the famous phrase from StarWars?",
+            type: QuestionAnswerType.PLAIN_TEXT_ANSWER,
+            answerIds: [uuid(), uuid(), uuid()]
+        }
+        const studentPlainAnswer = "I am your father." 
+        try {
+            const answer = studentAnswerService.getAnswerOrThrow(question, [], studentPlainAnswer)
+            expect(answer).toEqual(studentPlainAnswer)
+        } catch(error) {}
+    })
+
+    it ("should throw an error for question of type: PLAIN TEXT ANSWER", () => {
+        const question: Question = {
+            id: uuid(),
+            quizId: uuid(),
+            question: "What is the famous phrase from StarWars?",
+            type: QuestionAnswerType.PLAIN_TEXT_ANSWER,
+            answerIds: [uuid(), uuid(), uuid()]
+        }
+        const studentPlainAnswer = ""
+        try {
+            studentAnswerService.getAnswerOrThrow(question, [], studentPlainAnswer)
+        } catch(error) {
+            expect(error).toBeInstanceOf(HttpException)
+            expect((error as HttpException).message).toEqual("Provide text answer for Question type: Plain Text Answer")
         }
     })
 })

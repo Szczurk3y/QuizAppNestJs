@@ -7,6 +7,7 @@ import { v4 as uuid } from 'uuid'
 import { QuestionAnswerType } from "src/question/question.type";
 import { Question } from "src/model/question.entity";
 import { TeacherAnswer } from "src/model/answer-teacher.entity";
+import { ID } from 'graphql-ws';
 
 @Injectable()
 export class StudentAnswerService {
@@ -17,7 +18,7 @@ export class StudentAnswerService {
 
 
     async createStudentAnswerForQuestion(studentId: string, question: Question, studentAnswerInput: CreateStudentAnswerInput): Promise<StudentAnswer> {
-        const studentAnswersForQuestion = this.collectStudentAnswersFromInput(question, studentAnswerInput)
+        const studentAnswersForQuestion = this.getAnswerOrThrow(question, studentAnswerInput.studentAnswerIds, studentAnswerInput.plainTextAnswer)
         const studentAnswer = this.studentAnswerRepository.create({
             id: uuid(),
             questionId: question.id,
@@ -28,40 +29,64 @@ export class StudentAnswerService {
         return await this.studentAnswerRepository.save(studentAnswer)
     }
 
-    collectStudentAnswersFromInput(question: Question, studentAnswerInput: CreateStudentAnswerInput): string[] {
-        const { questionId, singleCorrectAnswerId, multipleCorrectAnswerIds, sortedAnswerIds, plainTextAnswer } = studentAnswerInput
-        // below fixes a bug when receiving JSON object...
-        const _type = QuestionAnswerType[question.type] || question.type
-        switch(_type) {
-            case QuestionAnswerType.SINGLE_CORRECT_ANSWER: {
-                if(singleCorrectAnswerId) {
-                    return [singleCorrectAnswerId]
-                } else {
-                    throw new HttpException("Provide correct answer id for Question type: Single Correct Answer", 400)
+    getAnswerOrThrow(question: Question, studentAnswerIds: ID[], plainTextAnswer: string): string[] {
+        if (!question) {
+            throw new HttpException("Provide correct quesiton id.", 400)
+        } else {
+            // below fixes a bug when receiving a JSON object...
+            const _type = QuestionAnswerType[question.type] || question.type
+            switch(_type) {
+                case QuestionAnswerType.SINGLE_CORRECT_ANSWER: {
+                    const singleAnswerProvided = studentAnswerIds.length === 1
+                    const existingIdProvided = question.answerIds.includes(studentAnswerIds.join())
+                    switch(true) {
+                        case !singleAnswerProvided: {
+                            throw new HttpException("Provide single answer for Question type: Single Correct Answer", 400)    
+                        }
+                        case !existingIdProvided: {
+                            throw new HttpException("Provide existing answer id for Question type: Single Correct Answer", 400)
+                        }
+                    }
+                    return studentAnswerIds
                 }
-            }
-            case QuestionAnswerType.MULTIPLE_CORRECT_ANSWERS: {
-                if(multipleCorrectAnswerIds.length <= question.answerIds.length) {
-                    return multipleCorrectAnswerIds                              
-                } else {
-                    throw new HttpException("Provide correct answers ids for Question type: Multiple Correct Answers", 400)
+                case QuestionAnswerType.MULTIPLE_CORRECT_ANSWERS: {
+                    const multipleAnswersProvided = studentAnswerIds.length <= question.answerIds.length
+                    const existingIdsProvided = studentAnswerIds.every(answerId => question.answerIds.includes(answerId))
+                    switch(true) {
+                        case !multipleAnswersProvided: {
+                            throw new HttpException("Provide correct amount of answers for Question type: Multiple Correct Answers", 400)
+                        }
+                        case !existingIdsProvided: {
+                            throw new HttpException("Provide existing answers ids for Question type: Multiple Correct Answers", 400)
+                        }
+                    }
+                    return studentAnswerIds                              
                 }
-            }
-            case QuestionAnswerType.SORTING: {
-                if(sortedAnswerIds.length === question.answerIds.length) {
-                    return sortedAnswerIds
-                } else {
-                    throw new HttpException("Provide all sorted answers ids for Question type: Sorting", 400)
+                case QuestionAnswerType.SORTING: {
+                    const sortedAnswersProvided = studentAnswerIds.length === question.answerIds.length
+                    const existingIdsProvided = studentAnswerIds.every(answerId => question.answerIds.includes(answerId))
+                    switch(true) {
+                        case !sortedAnswersProvided: {
+                            throw new HttpException("Provide all sorted answers ids for Question type: Sorting", 400)
+                        }
+                        case !existingIdsProvided: {
+                            throw new HttpException("Provide existing answers ids for Question type: Sorting", 400)
+                        }
+                    }
+                    return studentAnswerIds
                 }
-            }
-            case QuestionAnswerType.PLAIN_TEXT_ANSWER: {
-                if (plainTextAnswer) {
+                case QuestionAnswerType.PLAIN_TEXT_ANSWER: {
+                    const plainTextAnswerProvided = plainTextAnswer
+                    switch(true) {
+                        case !plainTextAnswerProvided: {
+                            throw new HttpException("Provide text answer for Question type: Plain Text Answer", 400)
+                        }
+                    }
                     return [plainTextAnswer]                            
-                } else {
-                    throw new HttpException("Provide text answer for Question type: Plain Text Answer", 400)
                 }
             }
         }
+        
     }
 
     static isStudentAnswerCorrect(question: Question, studentAnswer: StudentAnswer, teacherAnswers: TeacherAnswer[]): boolean {

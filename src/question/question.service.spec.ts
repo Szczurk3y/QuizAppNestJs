@@ -31,15 +31,171 @@ describe('QuestionService', () => {
         expect(questionService).toBeDefined()
     })
 
+    it('should return true for quesiton of type: SINGLE CORRECT ANSWER', async () => {
+        const questionType = QuestionAnswerType.SINGLE_CORRECT_ANSWER
+        const allAnswers: CreateTeacherAnswerInput[] = [
+            {
+                answer: "London",
+                isCorrect: false
+            },
+            {
+                answer: "Paris",
+                isCorrect: true,
+            },
+            {
+                answer: "Rome",
+                isCorrect: false
+            },
+            {
+                answer: "Madrid",
+                isCorrect: false
+            }
+        ]
+        expect(QuestionService.checkQuestionIsCorrect(questionType, allAnswers)).toBeTruthy()
+    })
 
+    it('should return true for quesiton of type: SINGLE CORRECT ANSWER', async () => {
+        const questionType = QuestionAnswerType.SINGLE_CORRECT_ANSWER
+        const allAnswers: CreateTeacherAnswerInput[] = [
+            {
+                answer: "London",
+                isCorrect: false
+            },
+            {
+                answer: "Paris",
+                isCorrect: true,
+            },
+            {
+                answer: "Rome",
+                isCorrect: false
+            },
+            {
+                answer: "Madrid",
+                isCorrect: false
+            }
+        ]
+        expect(QuestionService.checkQuestionIsCorrect(questionType, allAnswers)).toBeTruthy()
+    })
 
-    it('should check question is correct', async () => {
+    it('should return false for quesiton of type: SINGLE CORRECT ANSWER', async () => {
+        const questionType = QuestionAnswerType.SINGLE_CORRECT_ANSWER
+        const allAnswers: CreateTeacherAnswerInput[] = [
+            {
+                answer: "London",
+                isCorrect: false
+            },
+            {
+                answer: "Paris",
+                isCorrect: true,
+            },
+            {
+                answer: "Rome",
+                isCorrect: true
+            },
+            {
+                answer: "Madrid",
+                isCorrect: false
+            }
+        ]
+        expect(QuestionService.checkQuestionIsCorrect(questionType, allAnswers)).toBeFalsy()
+    })
+
+    it('should return true for quesiton of type: MULTIPLE CORRECT ANSWERS', async () => {
+        const questionType = QuestionAnswerType.MULTIPLE_CORRECT_ANSWERS
+        const allAnswers: CreateTeacherAnswerInput[] = [
+            {
+                answer: "Java",
+                isCorrect: true
+              },
+              {
+                answer: "C",
+                isCorrect: false
+              },
+              {
+                answer: "Python",
+                isCorrect: false
+              },
+              {
+                answer: "Ruby",
+                isCorrect: true
+              }
+        ]
+        expect(QuestionService.checkQuestionIsCorrect(questionType, allAnswers)).toBeTruthy()
+    })
+
+    it('should return true for quesiton of type: SORTING', async () => {
+        const questionType = QuestionAnswerType.SORTING
+        const allAnswers: CreateTeacherAnswerInput[] = [
+            {
+                answer: "Declaration of Independence",
+                isCorrect: true
+            },
+            {
+                answer: "World War II",
+                isCorrect: true
+            },
+            {
+                answer: "First Moon Landing.",
+                isCorrect: true
+            }
+        ]
+        expect(QuestionService.checkQuestionIsCorrect(questionType, allAnswers)).toBeTruthy()
+    })
+
+    it('should return false for quesiton of type: SORTING', async () => {
+        const questionType = QuestionAnswerType.SORTING
+        const allAnswers: CreateTeacherAnswerInput[] = [
+            {
+                answer: "Declaration of Independence",
+                isCorrect: false
+            },
+            {
+                answer: "World War II",
+                isCorrect: true
+            },
+            {
+                answer: "First Moon Landing.",
+                isCorrect: true
+            }
+        ]
+        expect(QuestionService.checkQuestionIsCorrect(questionType, allAnswers)).toBeFalsy()
+    })
+
+    it('should return true for quesiton of type: PLAIN TEXT ANSWER', async () => {
         const questionType = QuestionAnswerType.PLAIN_TEXT_ANSWER
-        const answer: CreateTeacherAnswerInput = {
-            answer: "Paris",
-            isCorrect: true,
-            questionId: uuid()
-        }
-        expect(QuestionService.checkQuestionIsCorrect(questionType, [answer])).toBeTruthy()
+        const allAnswers: CreateTeacherAnswerInput[] = [
+            {
+                answer: "May the Force be with you.",
+                isCorrect: true
+            },
+            {
+                answer: "I am your father.",
+                isCorrect: true
+            },
+            {
+                answer: "It's a trap!",
+                isCorrect: true
+            }
+        ]
+        expect(QuestionService.checkQuestionIsCorrect(questionType, allAnswers)).toBeTruthy()
+    })
+
+    it('should return false for quesiton of type: PLAIN TEXT ANSWER', async () => {
+        const questionType = QuestionAnswerType.PLAIN_TEXT_ANSWER
+        const allAnswers: CreateTeacherAnswerInput[] = [
+            {
+                answer: "May the Force be with you.",
+                isCorrect: true
+            },
+            {
+                answer: "I am your father.",
+                isCorrect: true
+            },
+            {
+                answer: "It's a trap!",
+                isCorrect: false
+            }
+        ]
+        expect(QuestionService.checkQuestionIsCorrect(questionType, allAnswers)).toBeFalsy()
     })
 })

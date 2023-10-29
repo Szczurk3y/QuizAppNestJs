@@ -11,9 +11,6 @@ export class CreateQuestionInput {
     @Field()
     question: string
 
-    @Field({ defaultValue: "" })
-    quizId: ID
-
     @Field(type => QuestionAnswerType)
     type: QuestionAnswerType
 

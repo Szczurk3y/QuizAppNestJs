@@ -9,17 +9,8 @@ export class CreateStudentAnswerInput {
     @IsUUID()
     questionId: ID
 
-    @Field({ defaultValue: "" })
-    @IsUUID("4", { each: true })
-    singleCorrectAnswerId: ID = ""
-
     @Field(type => [String], { defaultValue: [] })
-    @IsUUID("4", { each: true })
-    multipleCorrectAnswerIds: ID[] = []
-
-    @Field(type => [String], { defaultValue: [] })
-    @IsUUID("4", { each: true })
-    sortedAnswerIds: ID[] = []
+    studentAnswerIds: ID[] = []
 
     @Field({ defaultValue: ""})
     plainTextAnswer: string = ""

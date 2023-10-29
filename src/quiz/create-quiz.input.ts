@@ -14,10 +14,10 @@ export class CreateQuizInput {
     @IsUUID()
     teacherId: ID
 
-    @Field(() => [CreateQuestionInput])
-    questions: CreateQuestionInput[]
-
     @IsUUID("4", { each: true })
     @Field(() => [String])
     studentIds: ID[]
+
+    @Field(() => [CreateQuestionInput])
+    questions: CreateQuestionInput[]
 }
